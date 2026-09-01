@@ -39,7 +39,7 @@ def add_crime_rate(crime_name, area, source_path):
             crime_df = crime_df.drop(columns=['Thousand_Pop', 'Population'])
             save_path = source_path / 'final' / area 
             save_path.mkdir(parents=True, exist_ok=True)
-            crime_df.to_csv(save_path / crime_file)
+            crime_df.to_csv(save_path / crime_file,  index=False)
 
 
 
