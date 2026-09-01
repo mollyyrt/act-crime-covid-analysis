@@ -216,6 +216,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+<<<<<<< HEAD
 
 # Raw data
 data/raw/
+=======
+>>>>>>> ccea724e81de5a42f6cca97352a9dee107aa2e6a
