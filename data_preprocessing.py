@@ -1,11 +1,19 @@
 import pandas as pd
 from pathlib import Path
 import numpy as np
-from zipfile import ZipFile
-import os
-import sys
 
 def format_suburb_names(s_name, lower= False, upper = False):
+    """
+    Formats suburb names from data provided by ABS
+
+    Args:
+        s_name: (str) ABS suburb name
+        lower: (int) number of words to remove from the start of s_name
+        upper: (int) number of words to remove from the end of s_name
+    
+    Returns:
+        (str) Optionally shortened string, with instances of '(ACT)' removed
+    """       
     if not lower and not upper:
         s_name = s_name.split()
     else:
