@@ -235,7 +235,8 @@ crime_pch['Suburb'] = 'Parkes & Capital Hill'
 crime_pch['Region'] = 'Inner South'
 crime_df = pd.concat([crime_df, crime_pch], ignore_index=True)
 crime_df = crime_df[(crime_df['Suburb'] != 'Parkes') & (crime_df['Suburb'] != 'Capital Hill')]
-
+# remove Hume 
+crime_df = crime_df[crime_df['Region'] != 'Other']
 
 ### PROCESS ALL ###
 
