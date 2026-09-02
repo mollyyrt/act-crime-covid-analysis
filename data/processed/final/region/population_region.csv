@@ -1,16 +1,16 @@
 Region,Year,Population
 Belconnen,2014,97058
 Belconnen,2015,96906
-Belconnen,2016,97252
-Belconnen,2017,99532
-Belconnen,2018,101785
-Belconnen,2019,103291
-Belconnen,2020,104107
-Belconnen,2021,104872
-Belconnen,2022,105773
-Belconnen,2023,107121
-Belconnen,2024,107367
-Belconnen,2025,107842
+Belconnen,2016,97106
+Belconnen,2017,98630
+Belconnen,2018,99762
+Belconnen,2019,100966
+Belconnen,2020,101562
+Belconnen,2021,102131
+Belconnen,2022,102929
+Belconnen,2023,104235
+Belconnen,2024,104459
+Belconnen,2025,104929
 Gungahlin,2014,63410
 Gungahlin,2015,67959
 Gungahlin,2016,71582
@@ -25,9 +25,9 @@ Gungahlin,2024,77823
 Gungahlin,2025,78089
 Inner North,2014,52833
 Inner North,2015,53534
-Inner North,2016,54531
-Inner North,2017,56377
-Inner North,2018,57895
+Inner North,2016,54528
+Inner North,2017,56374
+Inner North,2018,57892
 Inner North,2019,59464
 Inner North,2020,60845
 Inner North,2021,61455

@@ -1,5 +1,6 @@
 import pandas as pd
 from pathlib import Path
+import sys
 
 def add_crime_rate(crime_name, area, source_path):
     """
@@ -32,7 +33,7 @@ def add_crime_rate(crime_name, area, source_path):
             else:
                 merge_cols = ['Region', 'Year']
 
-            crime_df = pd.merge(crime_df, pop_df, on=merge_cols, how='outer')
+            crime_df = pd.merge(crime_df, pop_df, on=merge_cols, how='left')
 
             crime_df['Thousand_Pop'] = crime_df['Population']/1000
             crime_df['Rate'] = crime_df['Number']/crime_df['Thousand_Pop'] 

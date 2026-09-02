@@ -1,6 +1,7 @@
 import pandas as pd
 from pathlib import Path
 import numpy as np
+import sys
 
 def format_suburb_names(s_name, lower= False, upper = False):
     """
@@ -87,7 +88,7 @@ def group_crimes(df, group_list):
 
     other = df[(df['Crime'] == 'Other - Against A Person') | (df['Crime'] == 'Other')]
     other = other.groupby(group_list).sum().reset_index()
-    other['Crime'] = 'Other'
+    other['Crime'] = 'Other Crime'
     df = pd.concat([df, other], ignore_index=True)
 
     tins = df[(df['Crime'] == 'TINs - Speeding') | (df['Crime'] == 'TINs - Mobile Use') | 
@@ -179,7 +180,8 @@ pop_df = pop_df[pop_df['State'] == 'Australian Capital Territory']
 pop_df['Suburb'] = pop_df['Suburb'].apply(format_suburb_names)
 pop_df = combine_parkes_ch_suburbs(pop_df, ['State'])
 pop_df = pop_df.drop(columns='State')
-
+# remove suburbs with no/unknown population from start of date range
+pop_df = pop_df[pop_df[2014] != 0]
 
 ### PROCESS CRIME DATA ###
 
@@ -254,12 +256,14 @@ keep_stats = desc_counts[desc_counts == desc_counts.max()].index
 suburb_df = suburb_df[suburb_df['Total Description'].isin(keep_stats)]
 
 # keep only data for suburbs found in intersection of suburb and crime dataframes
+remove_s_suburb = list(set(suburb_df['Suburb'].unique()) - set(pop_df['Suburb'].unique()))
+suburb_df = suburb_df[~suburb_df['Suburb'].isin(remove_s_suburb)]
 remove_s_crime = list(set(crime_df['Suburb'].unique()) - set(suburb_df['Suburb'].unique()))
 crime_df = crime_df[~crime_df['Suburb'].isin(remove_s_crime)]
-remove_s_suburb = list(set(suburb_df['Suburb'].unique()) - set(crime_df['Suburb'].unique()))
-suburb_df = suburb_df[~suburb_df['Suburb'].isin(remove_s_suburb)]
-remove_s_pop = list(set(pop_df['Suburb'].unique()) - set(suburb_df['Suburb'].unique()))
+remove_s_pop = list(set(pop_df['Suburb'].unique()) - set(crime_df['Suburb'].unique()))
 pop_df = pop_df[~pop_df['Suburb'].isin(remove_s_pop)]
+remove_s_suburb = list(set(suburb_df['Suburb'].unique()) - set(pop_df['Suburb'].unique()))
+suburb_df = suburb_df[~suburb_df['Suburb'].isin(remove_s_suburb)]
 
 # reshape into long format
 crime_long = crime_df.melt( id_vars=['Suburb', 'Crime', 'Region'], var_name='Year_Quarter', value_name='Number')
@@ -279,7 +283,6 @@ suburb_long = add_regions(suburb_long, region_suburbs)
 ### EXPORT DATA ###
 
 crime_long_grouped = group_crimes(crime_long.copy(), ['Region', 'Suburb', 'Year', 'Quarter'])
-
 save_region_suburb(crime_long, ['Region', 'Crime', 'Year', 'Quarter'], 'crime', True)
 save_region_suburb(crime_long_grouped, ['Region', 'Crime', 'Year', 'Quarter'], 'crime_grouped', True)
 save_region_suburb(pop_long, ['Region', 'Year'], 'population')

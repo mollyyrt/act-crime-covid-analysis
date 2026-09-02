@@ -15,7 +15,6 @@ Belconnen,Higgins,2014,3128
 Belconnen,Holt,2014,4734
 Belconnen,Kaleen,2014,7448
 Belconnen,Latham,2014,3656
-Belconnen,Lawson,2014,0
 Belconnen,Macgregor,2014,6530
 Belconnen,Macquarie,2014,2753
 Belconnen,McKellar,2014,2853
@@ -50,11 +49,9 @@ Inner North,Lyneham,2014,5046
 Inner North,O'Connor,2014,5596
 Inner North,Turner,2014,3987
 Inner North,Watson,2014,5855
-Inner North,Black Mountain,2014,0
 Inner North,Campbell,2014,3302
 Inner North,Duntroon,2014,1775
 Inner North,Reid,2014,1696
-Inner North,Russell,2014,0
 Inner South,Deakin,2014,2882
 Inner South,Forrest,2014,1652
 Inner South,Griffith,2014,4292
@@ -103,7 +100,6 @@ Woden,Pearce,2014,2620
 Woden,Phillip,2014,2546
 Woden,Torrens,2014,2288
 Molonglo District,Coombs,2014,40
-Molonglo District,Molonglo,2014,0
 Molonglo District,Wright,2014,1025
 Inner South,Parkes & Capital Hill,2014,7
 Belconnen,Aranda,2015,2460
@@ -122,7 +118,6 @@ Belconnen,Higgins,2015,3107
 Belconnen,Holt,2015,4645
 Belconnen,Kaleen,2015,7399
 Belconnen,Latham,2015,3634
-Belconnen,Lawson,2015,0
 Belconnen,Macgregor,2015,6701
 Belconnen,Macquarie,2015,2755
 Belconnen,McKellar,2015,2818
@@ -157,11 +152,9 @@ Inner North,Lyneham,2015,5155
 Inner North,O'Connor,2015,5621
 Inner North,Turner,2015,4067
 Inner North,Watson,2015,5888
-Inner North,Black Mountain,2015,0
 Inner North,Campbell,2015,3299
 Inner North,Duntroon,2015,1795
 Inner North,Reid,2015,1710
-Inner North,Russell,2015,0
 Inner South,Deakin,2015,2903
 Inner South,Forrest,2015,1676
 Inner South,Griffith,2015,4467
@@ -210,7 +203,6 @@ Woden,Pearce,2015,2614
 Woden,Phillip,2015,2766
 Woden,Torrens,2015,2242
 Molonglo District,Coombs,2015,1052
-Molonglo District,Molonglo,2015,0
 Molonglo District,Wright,2015,2046
 Inner South,Parkes & Capital Hill,2015,8
 Belconnen,Aranda,2016,2447
@@ -229,7 +221,6 @@ Belconnen,Higgins,2016,3090
 Belconnen,Holt,2016,4612
 Belconnen,Kaleen,2016,7369
 Belconnen,Latham,2016,3649
-Belconnen,Lawson,2016,146
 Belconnen,Macgregor,2016,6875
 Belconnen,Macquarie,2016,2763
 Belconnen,McKellar,2016,2810
@@ -264,11 +255,9 @@ Inner North,Lyneham,2016,5299
 Inner North,O'Connor,2016,5675
 Inner North,Turner,2016,4144
 Inner North,Watson,2016,5955
-Inner North,Black Mountain,2016,0
 Inner North,Campbell,2016,3312
 Inner North,Duntroon,2016,1809
 Inner North,Reid,2016,1704
-Inner North,Russell,2016,3
 Inner South,Deakin,2016,2941
 Inner South,Forrest,2016,1713
 Inner South,Griffith,2016,4661
@@ -317,7 +306,6 @@ Woden,Pearce,2016,2610
 Woden,Phillip,2016,3059
 Woden,Torrens,2016,2213
 Molonglo District,Coombs,2016,1811
-Molonglo District,Molonglo,2016,0
 Molonglo District,Wright,2016,2768
 Inner South,Parkes & Capital Hill,2016,9
 Belconnen,Aranda,2017,2485
@@ -336,7 +324,6 @@ Belconnen,Higgins,2017,3110
 Belconnen,Holt,2017,4717
 Belconnen,Kaleen,2017,7494
 Belconnen,Latham,2017,3667
-Belconnen,Lawson,2017,902
 Belconnen,Macgregor,2017,6989
 Belconnen,Macquarie,2017,2832
 Belconnen,McKellar,2017,2791
@@ -371,11 +358,9 @@ Inner North,Lyneham,2017,5462
 Inner North,O'Connor,2017,5759
 Inner North,Turner,2017,4190
 Inner North,Watson,2017,6079
-Inner North,Black Mountain,2017,0
 Inner North,Campbell,2017,3526
 Inner North,Duntroon,2017,1922
 Inner North,Reid,2017,1665
-Inner North,Russell,2017,3
 Inner South,Deakin,2017,2989
 Inner South,Forrest,2017,1716
 Inner South,Griffith,2017,4840
@@ -424,7 +409,6 @@ Woden,Pearce,2017,2625
 Woden,Phillip,2017,3503
 Woden,Torrens,2017,2245
 Molonglo District,Coombs,2017,2605
-Molonglo District,Molonglo,2017,0
 Molonglo District,Wright,2017,3184
 Inner South,Parkes & Capital Hill,2017,8
 Belconnen,Aranda,2018,2502
@@ -443,7 +427,6 @@ Belconnen,Higgins,2018,3127
 Belconnen,Holt,2018,4847
 Belconnen,Kaleen,2018,7501
 Belconnen,Latham,2018,3671
-Belconnen,Lawson,2018,2023
 Belconnen,Macgregor,2018,7036
 Belconnen,Macquarie,2018,2905
 Belconnen,McKellar,2018,2768
@@ -478,11 +461,9 @@ Inner North,Lyneham,2018,5609
 Inner North,O'Connor,2018,5846
 Inner North,Turner,2018,4229
 Inner North,Watson,2018,6193
-Inner North,Black Mountain,2018,0
 Inner North,Campbell,2018,3740
 Inner North,Duntroon,2018,2018
 Inner North,Reid,2018,1635
-Inner North,Russell,2018,3
 Inner South,Deakin,2018,3020
 Inner South,Forrest,2018,1779
 Inner South,Griffith,2018,5022
@@ -531,7 +512,6 @@ Woden,Pearce,2018,2626
 Woden,Phillip,2018,3927
 Woden,Torrens,2018,2272
 Molonglo District,Coombs,2018,3180
-Molonglo District,Molonglo,2018,0
 Molonglo District,Wright,2018,3411
 Inner South,Parkes & Capital Hill,2018,8
 Belconnen,Aranda,2019,2544
@@ -550,7 +530,6 @@ Belconnen,Higgins,2019,3180
 Belconnen,Holt,2019,5117
 Belconnen,Kaleen,2019,7542
 Belconnen,Latham,2019,3638
-Belconnen,Lawson,2019,2325
 Belconnen,Macgregor,2019,7057
 Belconnen,Macquarie,2019,2963
 Belconnen,McKellar,2019,2763
@@ -585,11 +564,9 @@ Inner North,Lyneham,2019,5663
 Inner North,O'Connor,2019,5980
 Inner North,Turner,2019,4392
 Inner North,Watson,2019,6313
-Inner North,Black Mountain,2019,0
 Inner North,Campbell,2019,4021
 Inner North,Duntroon,2019,2068
 Inner North,Reid,2019,1584
-Inner North,Russell,2019,0
 Inner South,Deakin,2019,3057
 Inner South,Forrest,2019,1783
 Inner South,Griffith,2019,5187
@@ -638,7 +615,6 @@ Woden,Pearce,2019,2619
 Woden,Phillip,2019,4292
 Woden,Torrens,2019,2307
 Molonglo District,Coombs,2019,3779
-Molonglo District,Molonglo,2019,0
 Molonglo District,Wright,2019,3454
 Inner South,Parkes & Capital Hill,2019,4
 Belconnen,Aranda,2020,2588
@@ -657,7 +633,6 @@ Belconnen,Higgins,2020,3237
 Belconnen,Holt,2020,5354
 Belconnen,Kaleen,2020,7613
 Belconnen,Latham,2020,3687
-Belconnen,Lawson,2020,2545
 Belconnen,Macgregor,2020,7094
 Belconnen,Macquarie,2020,3006
 Belconnen,McKellar,2020,2768
@@ -692,11 +667,9 @@ Inner North,Lyneham,2020,5677
 Inner North,O'Connor,2020,5974
 Inner North,Turner,2020,4460
 Inner North,Watson,2020,6467
-Inner North,Black Mountain,2020,0
 Inner North,Campbell,2020,4362
 Inner North,Duntroon,2020,2059
 Inner North,Reid,2020,1567
-Inner North,Russell,2020,0
 Inner South,Deakin,2020,3074
 Inner South,Forrest,2020,1804
 Inner South,Griffith,2020,5325
@@ -745,7 +718,6 @@ Woden,Pearce,2020,2707
 Woden,Phillip,2020,4750
 Woden,Torrens,2020,2347
 Molonglo District,Coombs,2020,4302
-Molonglo District,Molonglo,2020,0
 Molonglo District,Wright,2020,3623
 Inner South,Parkes & Capital Hill,2020,4
 Belconnen,Aranda,2021,2583
@@ -764,7 +736,6 @@ Belconnen,Higgins,2021,3298
 Belconnen,Holt,2021,5599
 Belconnen,Kaleen,2021,7638
 Belconnen,Latham,2021,3742
-Belconnen,Lawson,2021,2741
 Belconnen,Macgregor,2021,7022
 Belconnen,Macquarie,2021,3086
 Belconnen,McKellar,2021,2713
@@ -799,11 +770,9 @@ Inner North,Lyneham,2021,5677
 Inner North,O'Connor,2021,5903
 Inner North,Turner,2021,4467
 Inner North,Watson,2021,6707
-Inner North,Black Mountain,2021,0
 Inner North,Campbell,2021,4570
 Inner North,Duntroon,2021,1985
 Inner North,Reid,2021,1533
-Inner North,Russell,2021,0
 Inner South,Deakin,2021,3102
 Inner South,Forrest,2021,1824
 Inner South,Griffith,2021,5320
@@ -852,7 +821,6 @@ Woden,Pearce,2021,2672
 Woden,Phillip,2021,5197
 Woden,Torrens,2021,2406
 Molonglo District,Coombs,2021,4841
-Molonglo District,Molonglo,2021,0
 Molonglo District,Wright,2021,3802
 Inner South,Parkes & Capital Hill,2021,4
 Belconnen,Aranda,2022,2578
@@ -871,7 +839,6 @@ Belconnen,Higgins,2022,3303
 Belconnen,Holt,2022,5773
 Belconnen,Kaleen,2022,7649
 Belconnen,Latham,2022,3780
-Belconnen,Lawson,2022,2844
 Belconnen,Macgregor,2022,7017
 Belconnen,Macquarie,2022,3084
 Belconnen,McKellar,2022,2703
@@ -906,11 +873,9 @@ Inner North,Lyneham,2022,5727
 Inner North,O'Connor,2022,5902
 Inner North,Turner,2022,4605
 Inner North,Watson,2022,6921
-Inner North,Black Mountain,2022,0
 Inner North,Campbell,2022,4924
 Inner North,Duntroon,2022,2087
 Inner North,Reid,2022,1793
-Inner North,Russell,2022,0
 Inner South,Deakin,2022,3170
 Inner South,Forrest,2022,1899
 Inner South,Griffith,2022,5390
@@ -959,7 +924,6 @@ Woden,Pearce,2022,2702
 Woden,Phillip,2022,5516
 Woden,Torrens,2022,2416
 Molonglo District,Coombs,2022,5093
-Molonglo District,Molonglo,2022,0
 Molonglo District,Wright,2022,4062
 Inner South,Parkes & Capital Hill,2022,4
 Belconnen,Aranda,2023,2601
@@ -978,7 +942,6 @@ Belconnen,Higgins,2023,3293
 Belconnen,Holt,2023,5905
 Belconnen,Kaleen,2023,7722
 Belconnen,Latham,2023,3777
-Belconnen,Lawson,2023,2886
 Belconnen,Macgregor,2023,7026
 Belconnen,Macquarie,2023,3166
 Belconnen,McKellar,2023,2684
@@ -1013,11 +976,9 @@ Inner North,Lyneham,2023,5823
 Inner North,O'Connor,2023,5914
 Inner North,Turner,2023,4767
 Inner North,Watson,2023,7134
-Inner North,Black Mountain,2023,0
 Inner North,Campbell,2023,5107
 Inner North,Duntroon,2023,2249
 Inner North,Reid,2023,1897
-Inner North,Russell,2023,0
 Inner South,Deakin,2023,3213
 Inner South,Forrest,2023,1910
 Inner South,Griffith,2023,5466
@@ -1066,7 +1027,6 @@ Woden,Pearce,2023,2712
 Woden,Phillip,2023,5645
 Woden,Torrens,2023,2451
 Molonglo District,Coombs,2023,5528
-Molonglo District,Molonglo,2023,0
 Molonglo District,Wright,2023,4252
 Inner South,Parkes & Capital Hill,2023,218
 Belconnen,Aranda,2024,2602
@@ -1085,7 +1045,6 @@ Belconnen,Higgins,2024,3308
 Belconnen,Holt,2024,6024
 Belconnen,Kaleen,2024,7729
 Belconnen,Latham,2024,3765
-Belconnen,Lawson,2024,2908
 Belconnen,Macgregor,2024,6990
 Belconnen,Macquarie,2024,3177
 Belconnen,McKellar,2024,2652
@@ -1120,11 +1079,9 @@ Inner North,Lyneham,2024,5957
 Inner North,O'Connor,2024,5905
 Inner North,Turner,2024,4806
 Inner North,Watson,2024,7238
-Inner North,Black Mountain,2024,0
 Inner North,Campbell,2024,5317
 Inner North,Duntroon,2024,2337
 Inner North,Reid,2024,1981
-Inner North,Russell,2024,0
 Inner South,Deakin,2024,3204
 Inner South,Forrest,2024,1914
 Inner South,Griffith,2024,5757
@@ -1173,7 +1130,6 @@ Woden,Pearce,2024,2726
 Woden,Phillip,2024,6556
 Woden,Torrens,2024,2441
 Molonglo District,Coombs,2024,5914
-Molonglo District,Molonglo,2024,0
 Molonglo District,Wright,2024,4423
 Inner South,Parkes & Capital Hill,2024,292
 Belconnen,Aranda,2025,2643
@@ -1192,7 +1148,6 @@ Belconnen,Higgins,2025,3363
 Belconnen,Holt,2025,6047
 Belconnen,Kaleen,2025,7776
 Belconnen,Latham,2025,3763
-Belconnen,Lawson,2025,2913
 Belconnen,Macgregor,2025,6975
 Belconnen,Macquarie,2025,3231
 Belconnen,McKellar,2025,2619
@@ -1227,11 +1182,9 @@ Inner North,Lyneham,2025,6013
 Inner North,O'Connor,2025,5921
 Inner North,Turner,2025,4888
 Inner North,Watson,2025,7377
-Inner North,Black Mountain,2025,0
 Inner North,Campbell,2025,5365
 Inner North,Duntroon,2025,2367
 Inner North,Reid,2025,2013
-Inner North,Russell,2025,0
 Inner South,Deakin,2025,3247
 Inner South,Forrest,2025,1944
 Inner South,Griffith,2025,5826
@@ -1280,6 +1233,5 @@ Woden,Pearce,2025,2713
 Woden,Phillip,2025,7135
 Woden,Torrens,2025,2470
 Molonglo District,Coombs,2025,6159
-Molonglo District,Molonglo,2025,0
 Molonglo District,Wright,2025,4757
 Inner South,Parkes & Capital Hill,2025,336
