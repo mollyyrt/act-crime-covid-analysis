@@ -941,7 +941,7 @@ Inner North,Downer,TINs - Speeding,2014,Q1,8,3637,2.199615067363212,Pre
 Inner North,Duntroon,TINs - Speeding,2014,Q1,1,1775,0.5633802816901409,Pre
 Inner North,Hackett,TINs - Speeding,2014,Q1,0,2991,0.0,Pre
 Inner North,Lyneham,TINs - Speeding,2014,Q1,13,5046,2.576298057867618,Pre
-Inner North,Majura,TINs - Speeding,2014,Q1,31,170,182.35294117647052,Pre
+Inner North,Majura,TINs - Speeding,2014,Q1,31,170,182.35294117647047,Pre
 Inner North,O'Connor,TINs - Speeding,2014,Q1,64,5596,11.43674052894925,Pre
 Inner North,Reid,TINs - Speeding,2014,Q1,2,1696,1.179245283018868,Pre
 Inner North,Turner,TINs - Speeding,2014,Q1,14,3987,3.511412089290193,Pre
@@ -18694,7 +18694,7 @@ Inner South,Yarralumla,Burglary - Dwellings,2016,Q2,2,3026,0.6609385327164574,Pr
 Inner South,Barton,Burglary - Shops,2016,Q2,4,1491,2.682763246143528,Pre
 Inner South,Deakin,Burglary - Shops,2016,Q2,0,2941,0.0,Pre
 Inner South,Forrest,Burglary - Shops,2016,Q2,0,1713,0.0,Pre
-Inner South,Fyshwick,Burglary - Shops,2016,Q2,12,59,203.38983050847452,Pre
+Inner South,Fyshwick,Burglary - Shops,2016,Q2,12,59,203.3898305084745,Pre
 Inner South,Griffith,Burglary - Shops,2016,Q2,2,4661,0.4290924694271616,Pre
 Inner South,Kingston,Burglary - Shops,2016,Q2,3,4569,0.6565988181221274,Pre
 Inner South,Narrabundah,Burglary - Shops,2016,Q2,0,6038,0.0,Pre
@@ -20714,7 +20714,7 @@ Inner South,Yarralumla,TINs - Speeding,2016,Q3,8,3026,2.6437541308658297,Pre
 Inner South,Barton,TINs - Mobile Use,2016,Q3,0,1491,0.0,Pre
 Inner South,Deakin,TINs - Mobile Use,2016,Q3,1,2941,0.3400204012240734,Pre
 Inner South,Forrest,TINs - Mobile Use,2016,Q3,1,1713,0.5837711617046117,Pre
-Inner South,Fyshwick,TINs - Mobile Use,2016,Q3,12,59,203.38983050847452,Pre
+Inner South,Fyshwick,TINs - Mobile Use,2016,Q3,12,59,203.3898305084745,Pre
 Inner South,Griffith,TINs - Mobile Use,2016,Q3,0,4661,0.0,Pre
 Inner South,Kingston,TINs - Mobile Use,2016,Q3,1,4569,0.2188662727073758,Pre
 Inner South,Narrabundah,TINs - Mobile Use,2016,Q3,1,6038,0.1656177542232527,Pre
@@ -55877,7 +55877,7 @@ Inner South,Yarralumla,Burglary - Dwellings,2021,Q1,0,3094,0.0,During
 Inner South,Barton,Burglary - Shops,2021,Q1,1,1950,0.5128205128205129,During
 Inner South,Deakin,Burglary - Shops,2021,Q1,0,3102,0.0,During
 Inner South,Forrest,Burglary - Shops,2021,Q1,0,1824,0.0,During
-Inner South,Fyshwick,Burglary - Shops,2021,Q1,12,59,203.38983050847452,During
+Inner South,Fyshwick,Burglary - Shops,2021,Q1,12,59,203.3898305084745,During
 Inner South,Griffith,Burglary - Shops,2021,Q1,0,5320,0.0,During
 Inner South,Kingston,Burglary - Shops,2021,Q1,1,6583,0.1519064256418046,During
 Inner South,Narrabundah,Burglary - Shops,2021,Q1,0,6434,0.0,During
@@ -59827,7 +59827,7 @@ Inner South,Yarralumla,Theft - Other,2021,Q3,14,3094,4.524886877828054,During
 Inner South,Barton,Property Damage,2021,Q3,2,1950,1.0256410256410258,During
 Inner South,Deakin,Property Damage,2021,Q3,5,3102,1.6118633139909735,During
 Inner South,Forrest,Property Damage,2021,Q3,6,1824,3.289473684210526,During
-Inner South,Fyshwick,Property Damage,2021,Q3,12,59,203.38983050847452,During
+Inner South,Fyshwick,Property Damage,2021,Q3,12,59,203.3898305084745,During
 Inner South,Griffith,Property Damage,2021,Q3,19,5320,3.571428571428571,During
 Inner South,Kingston,Property Damage,2021,Q3,31,6583,4.709099194895944,During
 Inner South,Narrabundah,Property Damage,2021,Q3,12,6434,1.8650917003419327,During
@@ -61748,7 +61748,7 @@ Inner South,Yarralumla,Burglary - Dwellings,2021,Q4,8,3094,2.585649644473174,Pos
 Inner South,Barton,Burglary - Shops,2021,Q4,0,1950,0.0,Post
 Inner South,Deakin,Burglary - Shops,2021,Q4,0,3102,0.0,Post
 Inner South,Forrest,Burglary - Shops,2021,Q4,0,1824,0.0,Post
-Inner South,Fyshwick,Burglary - Shops,2021,Q4,12,59,203.38983050847452,Post
+Inner South,Fyshwick,Burglary - Shops,2021,Q4,12,59,203.3898305084745,Post
 Inner South,Griffith,Burglary - Shops,2021,Q4,2,5320,0.3759398496240601,Post
 Inner South,Kingston,Burglary - Shops,2021,Q4,1,6583,0.1519064256418046,Post
 Inner South,Narrabundah,Burglary - Shops,2021,Q4,0,6434,0.0,Post
@@ -63723,7 +63723,7 @@ Inner South,Yarralumla,Burglary - Other,2022,Q1,0,3124,0.0,Post
 Inner South,Barton,Theft - Motor Vehicles,2022,Q1,6,2029,2.957121734844751,Post
 Inner South,Deakin,Theft - Motor Vehicles,2022,Q1,1,3170,0.3154574132492113,Post
 Inner South,Forrest,Theft - Motor Vehicles,2022,Q1,0,1899,0.0,Post
-Inner South,Fyshwick,Theft - Motor Vehicles,2022,Q1,12,59,203.38983050847452,Post
+Inner South,Fyshwick,Theft - Motor Vehicles,2022,Q1,12,59,203.3898305084745,Post
 Inner South,Griffith,Theft - Motor Vehicles,2022,Q1,6,5390,1.1131725417439704,Post
 Inner South,Kingston,Theft - Motor Vehicles,2022,Q1,7,7044,0.9937535491198184,Post
 Inner South,Narrabundah,Theft - Motor Vehicles,2022,Q1,6,6605,0.9084027252081756,Post
@@ -77404,7 +77404,7 @@ Inner South,Yarralumla,Burglary - Dwellings,2023,Q4,3,3132,0.9578544061302682,Po
 Inner South,Barton,Burglary - Shops,2023,Q4,0,2083,0.0,Post
 Inner South,Deakin,Burglary - Shops,2023,Q4,0,3213,0.0,Post
 Inner South,Forrest,Burglary - Shops,2023,Q4,3,1910,1.5706806282722514,Post
-Inner South,Fyshwick,Burglary - Shops,2023,Q4,12,59,203.38983050847452,Post
+Inner South,Fyshwick,Burglary - Shops,2023,Q4,12,59,203.3898305084745,Post
 Inner South,Griffith,Burglary - Shops,2023,Q4,2,5466,0.3658982802780827,Post
 Inner South,Kingston,Burglary - Shops,2023,Q4,1,7360,0.1358695652173913,Post
 Inner South,Narrabundah,Burglary - Shops,2023,Q4,0,6814,0.0,Post
@@ -79266,7 +79266,7 @@ Inner North,Downer,TINs - Other,2024,Q1,18,4547,3.9586540576204094,Post
 Inner North,Duntroon,TINs - Other,2024,Q1,6,2337,2.567394094993581,Post
 Inner North,Hackett,TINs - Other,2024,Q1,0,3318,0.0,Post
 Inner North,Lyneham,TINs - Other,2024,Q1,14,5957,2.3501762632197414,Post
-Inner North,Majura,TINs - Other,2024,Q1,52,270,192.59259259259252,Post
+Inner North,Majura,TINs - Other,2024,Q1,52,270,192.59259259259247,Post
 Inner North,O'Connor,TINs - Other,2024,Q1,8,5905,1.3547840812870449,Post
 Inner North,Reid,TINs - Other,2024,Q1,13,1981,6.562342251388188,Post
 Inner North,Turner,TINs - Other,2024,Q1,8,4806,1.6645859342488556,Post

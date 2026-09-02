@@ -1,7 +1,6 @@
 import pandas as pd
 from pathlib import Path
-import sys
-import numpy as np
+from covid_dates import add_covid_col
 
 def file_validation(df):
     """
@@ -25,21 +24,6 @@ def file_validation(df):
             raise ValueError(f'Some regions have missing/extra values')
 
 
-def covid_dates(df):
-    """
-        Adds 'Covid' column to crime data, specifying time period in relation to covid 
-        Args:
-            df: (pd.Dataframe) Crime data containing 'Year' and 'Quarter' columns
-        Returns: 
-             df: (pd.Dataframe) Updated dataframe
-    """
-    df['Covid'] = np.where(((df['Year'] == 2021) & (df['Quarter'] != 'Q4')) | 
-                           ((df['Year'] == 2020) & (df['Quarter'] != 'Q1')), 'During', 
-                           np.where(((df['Year'] == 2020) & (df['Quarter'] == 'Q1')) | 
-                                    (df['Year'] < 2020), 'Pre', 'Post'))
-    return df
-
-
 def final_file_loop(f_name, source):
     """
         Loops over files in a subdirectory and carries out data validation
@@ -52,7 +36,7 @@ def final_file_loop(f_name, source):
     print('\n', f_name)
     file_validation(df)
     if 'crime' in f_name:
-        df = covid_dates(df) 
+        df = add_covid_col(df) 
         df.to_csv(source / f_name, index=False)
 
 
