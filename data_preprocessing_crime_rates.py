@@ -37,7 +37,7 @@ def add_crime_rate(crime_name, area, source_path):
 
             crime_df['Thousand_Pop'] = crime_df['Population']/1000
             crime_df['Rate'] = crime_df['Number']/crime_df['Thousand_Pop'] 
-            crime_df = crime_df.drop(columns=['Thousand_Pop', 'Population'])
+            crime_df = crime_df.drop(columns=['Thousand_Pop'])
             save_path = source_path / 'final' / area 
             save_path.mkdir(parents=True, exist_ok=True)
             crime_df.to_csv(save_path / crime_file,  index=False)
