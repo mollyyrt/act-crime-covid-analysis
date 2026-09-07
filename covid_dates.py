@@ -13,4 +13,5 @@ def add_covid_col(df):
                            ((df['Year'] == 2020) & (df['Quarter'] != 'Q1')), 'During', 
                            np.where(((df['Year'] == 2020) & (df['Quarter'] == 'Q1')) | 
                                     (df['Year'] < 2020), 'Pre', 'Post'))
+    df['Covid'] = pd.Categorical(df['Covid'], categories=['Pre', 'During', 'Post'], ordered=True)
     return df
