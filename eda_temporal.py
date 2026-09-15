@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import seaborn as sns
+import itertools
 from covid_dates import add_covid_col
 
 def datetime(df):
@@ -57,7 +58,7 @@ def add_total_crime(df):
 
 def covid_pct_change(df, cols):
     """
-    Calculates and displays percentage change in crime rates by covid period
+    Calculates and displays percentage change in crime rates by covid period (not including 'All Crime')
 
     Args:
         df: (pd.Dataframe) Crime dataframe
@@ -67,7 +68,6 @@ def covid_pct_change(df, cols):
     group_cols = cols.copy()
     group_cols.remove('Rate')
     mean_rate = df[cols]
-    mean_rate = mean_rate[mean_rate['Crime'] != 'All Crime']
     mean_rate = mean_rate.groupby(group_cols, as_index=False, observed=True).mean()
 
     mean_rate_change = mean_rate.copy()
@@ -75,6 +75,7 @@ def covid_pct_change(df, cols):
     mean_rate_change = mean_rate_change.drop(columns='Rate')
 
     group_cols.remove('Covid')
+    pct_change_long = pd.merge(mean_rate, mean_rate_change, on=mean_rate.columns[:-1].tolist(), how='inner')
     mean_rate = mean_rate.pivot(index=group_cols, columns='Covid', values='Rate')
     mean_rate_change = mean_rate_change.pivot(index=group_cols, columns='Covid', values='Percentage Change').drop(columns='Pre').fillna(0) # remove division by 0 error
     mean_rate.columns = ['Pre-Covid Mean Crime Rate', 'Covid Mean Crime Rate', 'Post-Covid Mean Crime Rate']
@@ -82,6 +83,44 @@ def covid_pct_change(df, cols):
     
     pct_change = pd.merge(mean_rate, mean_rate_change, left_index=True, right_index=True, how='inner')
     print(pct_change)
+    return pct_change_long
+
+
+def column_iqr(df, group_cols, val_col, summary_cols):
+    """
+    Calculates column outliers using interquartile ranges for a given column under a group
+    Displays the number of outliers found for each combination of specified summary columns
+
+    Args:
+        df: (pd.Dataframe) Crime dataframe
+        group_cols: (list(str)) df column names used for grouping in the aggregation
+        val_col: (str) df column name for which outliers should be determined
+        summary_cols: (list(str)) df column names used to split outlier counts 
+    """
+    # calculate outlier value ranges using interquartile range
+    quantiles = df.groupby(group_cols, as_index=False, observed=True)[val_col].agg(
+                                                            Q1=lambda x: x.quantile(0.25),Q3=lambda x: x.quantile(0.75))
+    quantiles['IQR'] = quantiles['Q3'] - quantiles['Q1']
+    quantiles['Lower'] = quantiles['Q1'] - (1.5 * quantiles['IQR'])
+    quantiles['Upper'] = quantiles['Q3'] + (1.5 * quantiles['IQR'])
+    quantiles_cols = group_cols + ['Lower', 'Upper']
+
+    # get rows containging high and low outlier values
+    extremes = pd.merge(df, quantiles[quantiles_cols], on=group_cols, how='inner')
+    high_outlier = extremes[extremes[val_col] > extremes['Upper']]
+    low_outlier = extremes[extremes[val_col] < extremes['Lower']]
+    # display number of outliers based on summary column values
+    print('\nHigh:')
+    if len(summary_cols) > 2:
+        for s in list(itertools.combinations(summary_cols, 2)):
+            print(high_outlier.value_counts(subset=list(s)).sort_index())
+        print('\nLow:')
+        for s in list(itertools.combinations(summary_cols, 2)):
+            print(low_outlier.value_counts(subset=list(s)).sort_index())
+    else:
+        print(high_outlier.value_counts(subset=summary_cols).sort_index())
+        print('\nLow:')
+        print(low_outlier.value_counts(subset=summary_cols).sort_index())
 
 
 def crime_subplots(df, plot_func, x, y, h, x_label=True, y_label=True, **kwargs):
@@ -139,7 +178,7 @@ def region_subplots(df, crime_name, plot_func, x, y, h, x_label=True, y_label=Tr
         y_label: (Boolean) specify whether to display y-axis label
         **kwargs: optional additional keyword arguments passed to plot_func
     """
-    fig, axs = plt.subplots(2,4, figsize=(12,6))
+    fig, axs = plt.subplots(2,4, figsize=(12,7))
     for i, ax in enumerate(axs.flat):
         reg_title = df['Region'].unique()[i]
         region = df[(df['Crime'] == crime_name) & (df['Region'] == reg_title)]
@@ -166,7 +205,6 @@ def region_subplots(df, crime_name, plot_func, x, y, h, x_label=True, y_label=Tr
 crime_region = pd.read_csv('data/processed/final/region/crime_grouped_region.csv')
 crime_act = crime_region.groupby(['Crime', 'Year', 'Quarter'], as_index=False).sum().drop(columns=['Region'])
 
-
 crime_region_total = add_total_crime(crime_region)
 crime_act_total = add_total_crime(crime_act)
 
@@ -174,8 +212,11 @@ sns.set_palette('Set2', 6)
 pal = sns.color_palette('Set2', 6)
 
 
-
 ## ACT-WIDE EDA ##
+
+print('Quarterly crime rate statistics across ACT')
+quarter_summary_act = crime_act_total.groupby('Crime').agg({'Rate': ['mean', 'std', 'min', 'max']})
+print(quarter_summary_act)
 
 # examine crime rates over time
 crime_subplots(crime_act_total, sns.lineplot, 'Date', 'Rate', 'Covid', False, False, legend=False)
@@ -185,14 +226,29 @@ plt.show()
 plt.close('all')
 
 # calculate percentage change during and after covid
-covid_pct_change(crime_act_total, ['Crime', 'Rate', 'Covid'])
+print('\nACT-wide crime rate changes by covid period:')
+crime_act_pct = covid_pct_change(crime_act_total, ['Crime', 'Rate', 'Covid'])
+crime_subplots(crime_act_pct, sns.barplot, None, 'Rate', 'Covid', False, True, legend=False, width=0.9)
+
+fig = plt.gcf()
+for i, ax in enumerate(fig.get_axes()):
+    #print(round(crime_act_pct.iloc[(3*i)+1, 3], 1))
+    changes = [round(crime_act_pct.iloc[(3*i)+1, 3], 1), round(crime_act_pct.iloc[(3*i)+2, 3], 1)]
+    str_changes = [f'{x}%' if x < 0 else f'+{x}%' for x in changes]
+
+    ax.text(0.5, 0.02, str_changes[0], transform=ax.transAxes, ha='center', size=9, weight='bold', c='white')
+    ax.text(0.8, 0.02, str_changes[1], transform=ax.transAxes, ha='center', size=9, weight='bold', c='white')
+plt.suptitle('Mean ACT Crime Rates and Percentage Changes for Each Covid Period', fontsize=14)
+plt.tight_layout(rect=[0, 0.07, 1, 1])
+plt.show()
+plt.close('all')
 
 
 ## explore seasonality trends
 seasonal = crime_act_total[['Crime', 'Quarter', 'Rate', 'Covid']].groupby(['Crime', 'Quarter', 'Covid'], as_index=False, observed=True).mean()
 seasonal.columns = ['Crime', 'Quarter', 'Covid', 'Mean Quarter Rate']
-crime_subplots(seasonal, sns.lineplot, 'Quarter', 'Mean Quarter Rate', 'Covid', x_label=True, y_label=True, legend=False)
-plt.suptitle('Quarterly Mean Crime Rate', fontsize=14)
+crime_subplots(seasonal, sns.lineplot, 'Quarter', 'Mean Quarter Rate', 'Covid', x_label=True, y_label=False, legend=False)
+plt.suptitle('ACT Mean Crime Rate', fontsize=14)
 plt.tight_layout(rect=[0, 0.07, 1, 1])
 plt.show()
 plt.close('all')
@@ -208,7 +264,7 @@ max_deviation = seasonal[['Crime', 'Covid', 'Percentage Deviation']].groupby(['C
 deviation_range = min_deviation[['Crime', 'Covid']].copy()
 deviation_range['Deviation Range'] = max_deviation['Percentage Deviation'] - min_deviation['Percentage Deviation']
 crime_subplots(deviation_range, sns.barplot, None, 'Deviation Range', 'Covid', x_label=True, y_label=True, legend=False)
-plt.suptitle('Quarterly Crime Rate Deviations', fontsize=14)
+plt.suptitle('ACT Quarterly Crime Rate Deviations', fontsize=14)
 plt.tight_layout(rect=[0, 0.07, 1, 1])
 plt.show()
 plt.close('all')
@@ -229,6 +285,7 @@ covid_region_comparison = region_comparison.drop(columns=['Quarter', 'Year'])
 covid_region_comparison = covid_region_comparison.groupby(['Crime', 'Region','Covid'], as_index=False, observed=True).mean()
 covid_region_comparison = covid_region_comparison.sort_values(by='Relative Difference')
 # display five max and min relative differences
+print('\nGreatest absolute relative crime rate differences by region and covid period:')
 print(covid_region_comparison.head())
 print(covid_region_comparison.tail())
 
@@ -238,12 +295,20 @@ plt.tight_layout(rect=[0, 0.07, 1, 1])
 plt.show()
 plt.close('all')
 
-crime_subplots(covid_region_comparison.sort_values(by='Crime'), sns.kdeplot, 'Relative Difference', None, 'Covid', x_label=True, y_label=True, legend=False)
+crime_subplots(covid_region_comparison.sort_values(by='Crime'), sns.kdeplot, 'Relative Difference', None, 'Covid', x_label=True, y_label=False, legend=False)
 plt.suptitle('Mean Regional Differences to ACT-Wide Crime Rate', fontsize=14)
 plt.tight_layout(rect=[0, 0.07, 1, 1])
 plt.show()
 plt.close('all')
 
+# find relative difference outliers
+print('\nNumber of relative difference outliers')
+covid_region_comparison_individual = covid_region_comparison[covid_region_comparison['Crime'] != 'All Crime']
+column_iqr(covid_region_comparison_individual, ['Crime', 'Covid'], 'Relative Difference', ['Covid', 'Crime', 'Region'])
 
 # calculate percentage change during and after covid
-covid_pct_change(crime_region_total, ['Crime', 'Region', 'Rate', 'Covid'])
+print('\nRegional crime rate changes by covid period:')
+crime_region_pct = covid_pct_change(crime_region_total, ['Crime', 'Region', 'Rate', 'Covid'])
+
+
+
