@@ -408,3 +408,22 @@ plt.title('Regional Rankings for Total Crime Rate by Covid Period')
 plt.tight_layout(pad=3)
 plt.show()
 plt.close('all')
+
+
+# regional seasonality
+region_seasonal, region_seasonal_amp = seasonal_amplitude(crime_region_total, ['Crime', 'Region', 'Quarter', 'Covid'])
+
+region_subplots(region_seasonal, 'All Crime', sns.lineplot, 'Quarter', 'Mean Quarter Rate', 'Covid', x_label=True, y_label=False, legend=False)
+plt.suptitle('Regional Mean Quarterly Total Crime Rate by Covid Period', fontsize=12)
+plt.tight_layout(rect=[0, 0.07, 1, 1])
+plt.show()
+plt.close('all')
+
+g = sns.catplot(region_seasonal_amp[region_seasonal_amp['Crime'] == 'All Crime'], x='Region', y='Seasonal Amplitude', row='Covid', hue='Region', kind='bar', height=2.4, aspect=4, zorder=2, legend=False)
+for ax in g.axes.flatten():
+    ax.grid(axis='y', zorder=1, linestyle='--', linewidth=0.5)
+plt.xticks(rotation=25)
+plt.suptitle('Regional Quarterly Seasonal Amplitude for All Crime by Covid Period', fontsize=12)
+plt.tight_layout()
+plt.show()
+plt.close('all')
