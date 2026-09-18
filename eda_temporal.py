@@ -55,6 +55,36 @@ def add_total_crime(df):
     df_total = pd.concat([df_all, df])
     return df_total
 
+
+def seasonal_amplitude(crime_df, group_cols):
+    """
+    Calculates percentage deviation between mean quarterly rates and period rates for each covid period
+    Args:
+        crime_df: (pd.Dataframe) Crime dataframe (containing at minimum 'Rate' column and columns in group_cols)
+        group_cols: (list(str)) Column names used for grouping when calculating mean quarterly rates (must contain 'Quarter' and 'Covid')
+    Returns:
+            seasonal: (pd.Dataframe) Mean quarterly crime rate for each column value in group_cols
+            deviation_range: (pd.Dataframe) Seasonal amplitude (percentage deviation range) 
+    """
+    filter_cols = group_cols + ['Rate']
+    # calculate quarterly mean rates within a covid period
+    seasonal = crime_df[filter_cols].groupby(group_cols, as_index=False, observed=True).mean()
+    seasonal.columns = group_cols + ['Mean Quarter Rate']
+    # calculate covid period mean rates
+    period_group = [x for x in group_cols if x not in ['Quarter']]
+    period_filter = [x for x in filter_cols if x not in ['Quarter']]
+    period_mean = crime_df[period_filter].groupby(period_group, as_index=False, observed=True).mean()
+    period_mean.columns = period_group + ['Mean Period Rate']
+    # calculate quarterly percentage deviation from period mean
+    df = pd.merge(seasonal, period_mean, on=period_group, how='inner')
+    df['Percentage Deviation'] = ((df['Mean Quarter Rate'] - df['Mean Period Rate'])/df['Mean Period Rate']) * 100
+    min_deviation = df[period_group + ['Percentage Deviation']].groupby(period_group, as_index=False, observed=True).min()
+    max_deviation = df[period_group + ['Percentage Deviation']].groupby(period_group, as_index=False, observed=True).max()
+    deviation_range = min_deviation[period_group].copy()
+    deviation_range['Seasonal Amplitude'] = max_deviation['Percentage Deviation'] - min_deviation['Percentage Deviation']
+    return seasonal, deviation_range
+
+
 def relative_difference(act_df, area_df):
     """
     Calculates relative difference between act-wide crime rates and an area subset of crime rates for each crime, year, and quarter
@@ -73,6 +103,7 @@ def relative_difference(act_df, area_df):
     # remove division by 0 errors
     df['Relative Difference'] = df['Relative Difference'].fillna(0)
     return df
+
 
 def covid_pct_change(df, cols):
     """
@@ -180,8 +211,6 @@ def crime_rate_bump(mean_rate_df, label_col, crime_name):
     axs.set_title(f'Mean {crime_name} Rankings')
 
 
-
-
 def crime_subplots(df, plot_func, x, y, h, x_label=True, y_label=True, **kwargs):
     """
     Creates and formats a subplot per crime  
@@ -265,8 +294,6 @@ crime_region = pd.read_csv('data/processed/final/region/crime_grouped_region.csv
 crime_suburb = pd.read_csv('data/processed/final/suburb/crime_grouped_suburb.csv')
 crime_act = crime_region.groupby(['Crime', 'Year', 'Quarter'], as_index=False).sum().drop(columns=['Region'])
 
-
-
 crime_region_total = add_total_crime(crime_region)
 crime_act_total = add_total_crime(crime_act)
 crime_suburb_total = add_total_crime(crime_suburb)
@@ -311,26 +338,18 @@ plt.close('all')
 
 
 ## explore seasonality trends
-seasonal = crime_act_total[['Crime', 'Quarter', 'Rate', 'Covid']].groupby(['Crime', 'Quarter', 'Covid'], as_index=False, observed=True).mean()
-seasonal.columns = ['Crime', 'Quarter', 'Covid', 'Mean Quarter Rate']
-crime_subplots(seasonal, sns.lineplot, 'Quarter', 'Mean Quarter Rate', 'Covid', x_label=True, y_label=False, legend=False)
+act_seasonal, act_seasonal_amp = seasonal_amplitude(crime_act_total, ['Crime', 'Quarter', 'Covid'])
+print(act_seasonal.head())
+print(act_seasonal_amp.head())
+
+crime_subplots(act_seasonal, sns.lineplot, 'Quarter', 'Mean Quarter Rate', 'Covid', x_label=True, y_label=False, legend=False)
 plt.suptitle('ACT Mean Quarterly Crime Rates by Covid Period', fontsize=12)
 plt.tight_layout(rect=[0, 0.07, 1, 1])
 plt.show()
 plt.close('all')
 
-# calculate quarterly percentage deviation from period mean
-mean = crime_act_total[['Crime','Rate', 'Covid']].groupby(['Crime', 'Covid'], as_index=False, observed=True).mean()
-mean.columns = ['Crime', 'Covid', 'Mean Period Rate']
-seasonal = pd.merge(seasonal, mean, on=['Crime', 'Covid'], how='inner')
-seasonal['Percentage Deviation'] = ((seasonal['Mean Quarter Rate'] - seasonal['Mean Period Rate'])/seasonal['Mean Period Rate']) * 100
-# calculate percentage deviation amplitude
-min_deviation = seasonal[['Crime', 'Covid', 'Percentage Deviation']].groupby(['Crime', 'Covid'], as_index=False, observed=True).min()
-max_deviation = seasonal[['Crime', 'Covid', 'Percentage Deviation']].groupby(['Crime', 'Covid'], as_index=False, observed=True).max()
-deviation_range = min_deviation[['Crime', 'Covid']].copy()
-deviation_range['Seasonal Amplitude'] = max_deviation['Percentage Deviation'] - min_deviation['Percentage Deviation']
-crime_subplots(deviation_range, sns.barplot, None, 'Seasonal Amplitude', 'Covid', x_label=True, y_label=True, legend=False)
-plt.suptitle('ACT Quarterly Crime Rate Deviations', fontsize=12)
+crime_subplots(act_seasonal_amp, sns.barplot, None, 'Seasonal Amplitude', 'Covid', x_label=True, y_label=True, legend=False)
+plt.suptitle('ACT Quarterly Crime Rate Deviations by Covid Period', fontsize=12)
 plt.tight_layout(rect=[0, 0.07, 1, 1])
 plt.show()
 plt.close('all')
