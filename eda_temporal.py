@@ -427,3 +427,27 @@ plt.suptitle('Regional Quarterly Seasonal Amplitude for All Crime by Covid Perio
 plt.tight_layout()
 plt.show()
 plt.close('all')
+
+
+
+## SUBURB-LEVEL EDA ##
+# compare total crime rates vs population within suburbs
+g = sns.jointplot(data=crime_suburb_total[crime_suburb_total['Crime'] != 'All Crime'], x='Population', y='Rate', hue='Covid')
+plt.suptitle('Suburb Crime Rates by Population and Covid Period', fontsize=12)
+g.figure.text(0.5, 0.94, 'Quarterly Crime Rates Across 103 Suburbs', ha='center', va='top', fontsize=10, color='grey')
+plt.tight_layout(rect=[0, 0.07, 1, 0.98])
+plt.show()
+plt.close('all')
+
+# add flag for suburbs (e.g. industrial/commercial) with low populations which are skewing data
+suburb_mean_pop = crime_suburb_total[['Suburb', 'Population', 'Rate']].groupby('Suburb').mean()
+low_pop = suburb_mean_pop[suburb_mean_pop['Population'] < 300].index.tolist()
+crime_suburb_total['Low Population'] = np.where(crime_suburb_total['Suburb'].isin(low_pop), 1, 0)
+
+g = sns.FacetGrid(crime_suburb_total[crime_suburb_total['Crime'] != 'All Crime'], col='Covid',  row='Low Population', sharex=False, sharey='row')
+g.map_dataframe(sns.scatterplot,  x='Population', y='Rate', hue='Covid')
+plt.suptitle('Suburb Crime Rates by Population and Covid Period', fontsize=12)
+g.figure.text(0.5, 0.94, 'Separated by Mean Populations of Under 300', ha='center', va='top', fontsize=10, color='grey')
+plt.tight_layout(rect=[0, 0.07, 1, 0.98])
+plt.show()
+plt.close('all')
