@@ -288,7 +288,30 @@ def region_subplots(df, crime_name, plot_func, x, y, h, x_label=True, y_label=Tr
 
         fig.legend(handles=handles, labels=labels, loc='lower center', 
                            ncol=len(labels), bbox_to_anchor=(0.5, 0.005), title='Covid Period')
+
         
+def regional_vs_suburb_plot(suburb_df, region_df, crime, region, covid, y_val, axs):
+    """
+    Creates and formats a subplot containing boxplots for suburb values and a line for mean regional value  
+
+    Args:
+        suburb_df: (pd.Dataframe) Suburb-level dataframe containing 'Crime', 'Region', 'Suburb' and y_val
+        region_df: (pd.Dataframe) Region-level dataframe containing 'Crime', 'Region', 'Suburb' and y_val
+        crime: (str) 'Crime' value for filtering
+        region: (str) 'Region' value for filtering
+        covid: (str) 'Covid' value for filtering
+        y_val: (str) Column name used for y-axis measure
+        axs: axis object
+    """
+    df_filtered = suburb_df[(suburb_df['Crime'] == crime) & (suburb_df['Covid'] == covid) & (suburb_df['Region'] == region)]
+    mean_region_val = region_df[(region_df['Crime'] == crime) & (region_df['Covid'] == covid) & (region_df['Region'] == region)][y_val]
+
+    sns.boxplot(data=df_filtered, x='Suburb', y=y_val, hue='Suburb', ax=axs, legend=False, zorder=2)
+    axs.axhline(y=mean_region_val.item(), color='grey', linestyle='--', linewidth=1, alpha=0.7, zorder=1)
+    axs.annotate(f'{covid} Covid', xy=(1.02, 0.5), xycoords='axes fraction', rotation=270, fontsize=10,  color='grey', va='center', ha='right')
+    axs.set_xlabel(None)
+
+
 
 crime_region = pd.read_csv('data/processed/final/region/crime_grouped_region.csv')
 crime_suburb = pd.read_csv('data/processed/final/suburb/crime_grouped_suburb.csv')
@@ -451,3 +474,43 @@ g.figure.text(0.5, 0.94, 'Separated by Mean Populations of Under 300', ha='cente
 plt.tight_layout(rect=[0, 0.07, 1, 0.98])
 plt.show()
 plt.close('all')
+
+
+# calculate relative difference
+suburb_rel_diff = relative_difference(crime_act_total, crime_suburb_total)
+
+# compare suburb-level relative differences to regional means
+fig, axs = plt.subplots(3, 1, figsize=(10, 10))
+regional_vs_suburb_plot(suburb_rel_diff, covid_region_comparison, 'All Crime', 'Belconnen', 'Pre', 'Relative Difference', axs[0])
+regional_vs_suburb_plot(suburb_rel_diff, covid_region_comparison, 'All Crime', 'Belconnen', 'During', 'Relative Difference', axs[1])
+regional_vs_suburb_plot(suburb_rel_diff, covid_region_comparison, 'All Crime', 'Belconnen', 'Post', 'Relative Difference', axs[2])
+axs[0].tick_params(labelbottom=False)
+axs[1].tick_params(labelbottom=False)
+axs[2].tick_params(axis='x', labelrotation=45, labelsize=8)
+plt.suptitle('Belconnen: Comparison of Suburb Relative Differences and Region Mean by Covid Period')
+plt.tight_layout(rect=[0, 0.07, 1, 1])
+plt.show()
+plt.close('all')
+
+gungahlin_filtered = suburb_rel_diff[~suburb_rel_diff['Suburb'].isin(low_pop)]
+fig, axs = plt.subplots(3, 2, figsize=(16, 10))
+regional_vs_suburb_plot(suburb_rel_diff, covid_region_comparison, 'All Crime', 'Gungahlin', 'Pre', 'Relative Difference', axs[0][0])
+regional_vs_suburb_plot(suburb_rel_diff, covid_region_comparison, 'All Crime', 'Gungahlin', 'During', 'Relative Difference', axs[1][0])
+regional_vs_suburb_plot(suburb_rel_diff, covid_region_comparison, 'All Crime', 'Gungahlin', 'Post', 'Relative Difference', axs[2][0])
+regional_vs_suburb_plot(gungahlin_filtered, covid_region_comparison, 'All Crime', 'Gungahlin', 'Pre', 'Relative Difference', axs[0][1])
+regional_vs_suburb_plot(gungahlin_filtered, covid_region_comparison, 'All Crime', 'Gungahlin', 'During', 'Relative Difference', axs[1][1])
+regional_vs_suburb_plot(gungahlin_filtered, covid_region_comparison, 'All Crime', 'Gungahlin', 'Post', 'Relative Difference', axs[2][1])
+for i in [0,1]:
+    axs[0][i].tick_params(labelbottom=False)
+    axs[1][i].tick_params(labelbottom=False)
+    axs[2][i].tick_params(axis='x', labelrotation=45, labelsize=8)
+for i in [0,1,2]:
+    axs[i][1].set_ylabel(None)
+axs[0][0].annotate('All Suburbs', xy=(0.5, 1.05), xycoords='axes fraction', fontsize=10, va='center', ha='center')
+axs[0][1].annotate('Not Including Low-Population Suburbs', xy=(0.5, 1.05), xycoords='axes fraction', fontsize=10, va='center', ha='center')
+plt.suptitle('Gungahlin: Comparison of Suburb Relative Differences and Region Mean by Covid Period')
+plt.tight_layout(rect=[0, 0.07, 1, 0.95])
+plt.show()
+plt.close('all')
+
+
