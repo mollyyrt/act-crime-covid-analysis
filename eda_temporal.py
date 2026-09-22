@@ -78,6 +78,8 @@ def seasonal_amplitude(crime_df, group_cols):
     # calculate quarterly percentage deviation from period mean
     df = pd.merge(seasonal, period_mean, on=period_group, how='inner')
     df['Percentage Deviation'] = ((df['Mean Quarter Rate'] - df['Mean Period Rate'])/df['Mean Period Rate']) * 100
+    # remove division by 0 error
+    df['Percentage Deviation'] = df['Percentage Deviation'].fillna(0)
     min_deviation = df[period_group + ['Percentage Deviation']].groupby(period_group, as_index=False, observed=True).min()
     max_deviation = df[period_group + ['Percentage Deviation']].groupby(period_group, as_index=False, observed=True).max()
     deviation_range = min_deviation[period_group].copy()
@@ -586,4 +588,18 @@ plt.close('all')
 sys.exit()
 
 
+# suburb-level seasonality
+suburb_seasonal, suburb_seasonal_amp = seasonal_amplitude(crime_suburb_total, ['Crime', 'Region', 'Suburb', 'Quarter', 'Covid'])
+
+crime_subplots(suburb_seasonal, sns.lineplot, 'Quarter', 'Mean Quarter Rate', 'Covid', x_label=True, y_label=True, legend=False)
+plt.suptitle('Suburb Crime Seasonal Amplitudes by Covid Period')
+plt.tight_layout(rect=[0, 0.07, 1, 1])
+plt.show()
+plt.close('all')
+
+crime_subplots(suburb_seasonal_amp, sns.boxplot, None, 'Seasonal Amplitude', 'Covid', x_label=True, y_label=True, legend=False)
+plt.suptitle('Suburb Crime Seasonal Amplitudes by Covid Period')
+plt.tight_layout(rect=[0, 0.07, 1, 1])
+plt.show()
+plt.close('all')
 
