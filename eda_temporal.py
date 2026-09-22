@@ -454,10 +454,25 @@ plt.close('all')
 
 
 ## SUBURB-LEVEL EDA ##
-# compare total crime rates vs population within suburbs
+
+# explore suburb level crimes over time
+crime_subplots(crime_suburb_total, sns.lineplot, 'Date', 'Rate', 'Covid', False, False, legend=False)
+plt.suptitle('Suburb Crime Rates over Time')
+plt.tight_layout(rect=[0, 0.07, 1, 1])
+plt.show()
+plt.close('all')
+
+# compare total crime rates/number vs population within suburbs
 g = sns.jointplot(data=crime_suburb_total[crime_suburb_total['Crime'] != 'All Crime'], x='Population', y='Rate', hue='Covid')
 plt.suptitle('Suburb Crime Rates by Population and Covid Period', fontsize=12)
 g.figure.text(0.5, 0.94, 'Quarterly Crime Rates Across 103 Suburbs', ha='center', va='top', fontsize=10, color='grey')
+plt.tight_layout(rect=[0, 0.07, 1, 0.98])
+plt.show()
+plt.close('all')
+
+g = sns.jointplot(data=crime_suburb_total[crime_suburb_total['Crime'] != 'All Crime'], x='Population', y='Number', hue='Covid')
+plt.suptitle('Suburb Crime Occurences by Population and Covid Period', fontsize=12)
+g.figure.text(0.5, 0.94, 'Quarterly Crime Counts Across 103 Suburbs', ha='center', va='top', fontsize=10, color='grey')
 plt.tight_layout(rect=[0, 0.07, 1, 0.98])
 plt.show()
 plt.close('all')
