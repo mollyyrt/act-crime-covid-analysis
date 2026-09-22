@@ -462,6 +462,23 @@ plt.tight_layout(rect=[0, 0.07, 1, 1])
 plt.show()
 plt.close('all')
 
+# display number of outliers for each crime
+crime_suburb_covid = crime_suburb_total.drop(columns=['Quarter', 'Population', 'Date'])
+crime_suburb_covid = crime_suburb_covid.groupby(['Crime', 'Region', 'Suburb', 'Covid'], as_index=False, observed=True).mean()
+high_suburb_rate, low_suburb_rate = column_iqr(crime_suburb_covid, ['Crime', 'Covid'], 'Rate')
+
+plt.figure(figsize=(12, 5))
+sns.countplot(high_suburb_rate, x='Crime', hue='Covid', zorder=2)
+plt.grid(axis='y', zorder=1, linestyle='--', linewidth=0.5)
+plt.xticks(rotation=30)
+plt.suptitle('Number of Unusually High Suburb Crime Rates by COVID Period', fontsize=14)
+plt.title('Outliers identified among quarterly observations across 103 suburbs', fontsize=10, color='grey')
+plt.tight_layout()
+plt.show()
+plt.clf()
+sys.exit()
+
+
 # compare total crime rates/number vs population within suburbs
 g = sns.jointplot(data=crime_suburb_total[crime_suburb_total['Crime'] != 'All Crime'], x='Population', y='Rate', hue='Covid')
 plt.suptitle('Suburb Crime Rates by Population and Covid Period', fontsize=12)
@@ -527,5 +544,46 @@ plt.suptitle('Gungahlin: Comparison of Suburb Relative Differences and Region Me
 plt.tight_layout(rect=[0, 0.07, 1, 0.95])
 plt.show()
 plt.close('all')
+
+# relative difference outliers
+suburb_comparison_covid = suburb_rel_diff.drop(columns=['Quarter', 'ACT Rate', 'Year'])
+suburb_comparison_covid = suburb_comparison_covid.groupby(['Crime', 'Region', 'Suburb', 'Covid'], as_index=False, observed=True).mean()
+
+high_suburb_rel_diff, low_suburb_rel_diff = column_iqr(suburb_comparison_covid, ['Crime', 'Covid'], 'Relative Difference')
+print('\nNumber of extreme suburb relative differences in each covid period')
+print('High outliers:')
+print(high_suburb_rel_diff.value_counts(subset=['Crime', 'Covid']).sort_index())
+print(high_suburb_rel_diff.value_counts(subset=['Covid']).sort_index())
+print('Low outliers:')
+print(low_suburb_rel_diff.value_counts(subset=['Crime', 'Covid']).sort_index())
+print(low_suburb_rel_diff.value_counts(subset=['Covid']).sort_index())
+
+
+# percentage change between suburb and ACT-wide crime rates
+suburb_pct, suburb_mean_rate = covid_pct_change(crime_suburb_total, ['Crime', 'Region', 'Suburb', 'Covid', 'Rate'])
+
+suburb_pct_change_only = suburb_pct[suburb_pct['Covid'] != 'Pre']
+h_suburb_pct_change, l_suburb_pct_change= column_iqr(suburb_pct[suburb_pct['Covid'] != 'Pre'], ['Crime', 'Covid'], 'Percentage Change')
+print('\nNumber of extreme percentage change values between covid periods')
+print('High outliers:')
+print(h_suburb_pct_change.value_counts(subset=['Crime', 'Covid']).sort_index())
+print(h_suburb_pct_change.value_counts(subset=['Covid']).sort_index())
+print('Low outliers:')
+print(l_suburb_pct_change.value_counts(subset=['Crime', 'Covid']).sort_index())
+print(l_suburb_pct_change.value_counts(subset=['Covid']).sort_index())
+
+crime_rate_bump(suburb_mean_rate, 'Suburb', 'All Crime')
+plt.title('Suburb Rankings for Total Crime Rate by Covid Period')
+plt.tight_layout(pad=3)
+plt.show()
+plt.close('all')
+
+crime_subplots(suburb_pct_change_only, sns.kdeplot, 'Percentage Change', None, 'Covid', x_label=True, y_label=True, legend=False)
+plt.suptitle('Mean Percentage Change in Suburb Crime Rates by Covid Period')
+plt.tight_layout(rect=[0, 0.07, 1, 1])
+plt.show()
+plt.close('all')
+sys.exit()
+
 
 
