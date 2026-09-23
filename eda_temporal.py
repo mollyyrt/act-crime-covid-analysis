@@ -314,14 +314,16 @@ def regional_vs_suburb_plot(suburb_df, region_df, crime, region, covid, y_val, a
     axs.set_xlabel(None)
 
 
+source_path = Path('data/processed')
 
-crime_region = pd.read_csv('data/processed/final/region/crime_grouped_region.csv')
-crime_suburb = pd.read_csv('data/processed/final/suburb/crime_grouped_suburb.csv')
-crime_act = crime_region.groupby(['Crime', 'Year', 'Quarter'], as_index=False).sum().drop(columns=['Region'])
+crime_act = pd.read_csv(source_path / 'crime_act.csv')
+crime_act['Date'] = pd.to_datetime(crime_act['Date'], format='%Y-%m-%d')
 
-crime_region_total = add_total_crime(crime_region)
-crime_act_total = add_total_crime(crime_act)
-crime_suburb_total = add_total_crime(crime_suburb)
+crime_region = pd.read_csv(source_path / 'crime_region.csv')
+crime_region['Date'] = pd.to_datetime(crime_region['Date'], format='%Y-%m-%d')
+
+crime_suburb = pd.read_csv(source_path / 'crime_suburb.csv')
+crime_suburb['Date'] = pd.to_datetime(crime_suburb['Date'], format='%Y-%m-%d')
 
 sns.set_palette('Set2', 6)
 pal = sns.color_palette('Set2', 6)
@@ -330,11 +332,11 @@ pal = sns.color_palette('Set2', 6)
 ## ACT-WIDE EDA ##
 
 print('ACT crime rate statistics between 2014-2025')
-quarter_summary_act = crime_act_total.groupby('Crime').agg({'Rate': ['mean', 'median', 'std', 'min', 'max']})
+quarter_summary_act = crime_act.groupby('Crime').agg({'Rate': ['mean', 'median', 'std', 'min', 'max']})
 print(quarter_summary_act)
 
 # examine crime rates over time
-crime_subplots(crime_act_total, sns.lineplot, 'Date', 'Rate', 'Covid', False, False, legend=False)
+crime_subplots(crime_act, sns.lineplot, 'Date', 'Rate', 'Covid', False, False, legend=False)
 
 plt.suptitle('ACT Crime Rates', fontsize=14)
 act_rates_fig = plt.gcf()
@@ -345,7 +347,7 @@ plt.close('all')
 
 # calculate percentage change during and after covid
 print('\nACT-wide crime rate changes by covid period:')
-crime_act_pct, act_mean_rate = covid_pct_change(crime_act_total, ['Crime', 'Rate', 'Covid'])
+crime_act_pct, act_mean_rate = covid_pct_change(crime_act, ['Crime', 'Rate', 'Covid'])
 crime_subplots(crime_act_pct, sns.barplot, None, 'Rate', 'Covid', False, True, legend=False, width=0.9)
 
 fig = plt.gcf()
@@ -363,7 +365,7 @@ plt.close('all')
 
 
 ## explore seasonality trends
-act_seasonal, act_seasonal_amp = seasonal_amplitude(crime_act_total, ['Crime', 'Quarter', 'Covid'])
+act_seasonal, act_seasonal_amp = seasonal_amplitude(crime_act, ['Crime', 'Quarter', 'Covid'])
 print(act_seasonal.head())
 print(act_seasonal_amp.head())
 
@@ -383,7 +385,7 @@ plt.close('all')
 ## REGION-LEVEL EDA ##
 
 # calculate relative difference between regional and act crime rates for each crime
-region_rel_diff = relative_difference(crime_act_total, crime_region_total)
+region_rel_diff = relative_difference(crime_act, crime_region)
 
 # calculate mean regional rates and relative difference by covid period
 covid_region_comparison = region_rel_diff.drop(columns=['Quarter', 'Year'])
@@ -427,7 +429,7 @@ print(l_region_rel__diff.value_counts(subset=['Region', 'Covid']).sort_index())
 
 # calculate percentage change during and after covid
 print('\nRegional crime rate changes by covid period:')
-crime_region_pct, region_mean_rate = covid_pct_change(crime_region_total, ['Crime', 'Region', 'Rate', 'Covid'])
+crime_region_pct, region_mean_rate = covid_pct_change(crime_region, ['Crime', 'Region', 'Rate', 'Covid'])
 crime_rate_bump(region_mean_rate, 'Region', 'All Crime')
 plt.title('Regional Rankings for Total Crime Rate by Covid Period')
 plt.tight_layout(pad=3)
@@ -436,7 +438,7 @@ plt.close('all')
 
 
 # regional seasonality
-region_seasonal, region_seasonal_amp = seasonal_amplitude(crime_region_total, ['Crime', 'Region', 'Quarter', 'Covid'])
+region_seasonal, region_seasonal_amp = seasonal_amplitude(crime_region, ['Crime', 'Region', 'Quarter', 'Covid'])
 
 region_subplots(region_seasonal, 'All Crime', sns.lineplot, 'Quarter', 'Mean Quarter Rate', 'Covid', x_label=True, y_label=False, legend=False)
 plt.suptitle('Regional Mean Quarterly Total Crime Rate by Covid Period', fontsize=12)
@@ -458,14 +460,14 @@ plt.close('all')
 ## SUBURB-LEVEL EDA ##
 
 # explore suburb level crimes over time
-crime_subplots(crime_suburb_total, sns.lineplot, 'Date', 'Rate', 'Covid', False, False, legend=False)
+crime_subplots(crime_suburb, sns.lineplot, 'Date', 'Rate', 'Covid', False, False, legend=False)
 plt.suptitle('Suburb Crime Rates over Time')
 plt.tight_layout(rect=[0, 0.07, 1, 1])
 plt.show()
 plt.close('all')
 
 # display number of outliers for each crime
-crime_suburb_covid = crime_suburb_total.drop(columns=['Quarter', 'Population', 'Date'])
+crime_suburb_covid = crime_suburb.drop(columns=['Quarter', 'Population', 'Date'])
 crime_suburb_covid = crime_suburb_covid.groupby(['Crime', 'Region', 'Suburb', 'Covid'], as_index=False, observed=True).mean()
 high_suburb_rate, low_suburb_rate = column_iqr(crime_suburb_covid, ['Crime', 'Covid'], 'Rate')
 

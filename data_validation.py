@@ -1,6 +1,6 @@
 import pandas as pd
 from pathlib import Path
-from covid_dates import add_covid_col
+
 
 def file_validation(df):
     """
@@ -18,37 +18,19 @@ def file_validation(df):
     if 'Suburb' in df.columns:
         if df['Suburb'].value_counts().nunique() != 1:
             raise ValueError(f'Some suburbs have missing/extra values')
-    else:
-        if  int(df['Region'].value_counts().nunique()) != 1:
+    elif 'Region' in df.columns:
+        if int(df['Region'].value_counts().nunique()) != 1:
             print(df['Region'].value_counts())
             raise ValueError(f'Some regions have missing/extra values')
 
 
-def final_file_loop(f_name, source):
-    """
-        Loops over files in a subdirectory and carries out data validation
-        Includes 'Covid' column to crime data, specifying time period in relation to covid 
-        Args:
-            f_name: (str) File name
-            source: (pathlib.Path) Relative location of file directory
-    """
-    df = pd.read_csv(source / f_name)
-    print('\n', f_name)
+
+source_path = Path('data/processed')
+
+file_names = [f.name for f in source_path.iterdir() if f.is_file()]
+for f in file_names:
+    df = pd.read_csv(source_path / f)
+    print('\n', f)
     file_validation(df)
-    if 'crime' in f_name:
-        df = add_covid_col(df) 
-        df.to_csv(source / f_name, index=False)
 
-
-
-source_path_region = Path('data/processed/final/region')
-source_path_suburb = Path('data/processed/final/suburb')
-
-region_names = [f.name for f in source_path_region.iterdir() if f.is_file()]
-for f in region_names:
-    final_file_loop(f, source_path_region)
-
-suburb_names = [f.name for f in source_path_suburb.iterdir() if f.is_file()]
-for f in suburb_names:
-    final_file_loop(f, source_path_suburb)
 

@@ -2,166 +2,28 @@ import pandas as pd
 from pathlib import Path
 import numpy as np
 import sys
+from src.preprocessing_funcs import (
+    format_suburb_names,
+    create_suburb_df,
+    combine_parkes_ch_suburbs,
+    group_crimes,
+    add_regions, 
+    save_region_suburb
+)
 
-def format_suburb_names(s_name, lower= False, upper = False):
-    """
-    Formats suburb names from data provided by ABS
-
-    Args:
-        s_name: (str) ABS suburb name
-        lower: (int) number of words to remove from the start of s_name
-        upper: (int) number of words to remove from the end of s_name
-    
-    Returns:
-        (str) Optionally shortened string, with instances of '(ACT)' removed
-    """       
-    if not lower and not upper:
-        s_name = s_name.split()
-    else:
-        s_name = s_name.split()[lower:upper]
-    s_name_filtered = [s for s in s_name if s != '(ACT)']
-    return ' '.join(s_name_filtered)
-
-
-def create_suburb_df(f):
-    """
-    Reads ABS suburb statistics files in suburb_path to df and concantenates to dataframe 
-
-    Args:
-        f: (str) File name in suburb_path
-    
-    Returns:
-        suburb: (pd.Dataframe) Current dataframe including new data from f
-    """    
-    suburb = pd.read_csv(suburb_path / f)
-    suburb['Suburb'] = format_suburb_names(f, lower= 2, upper = -2)
-    return suburb
-
-
-def combine_parkes_ch_suburbs(df, group_list):
-    """
-    Combines Parkes - North and Parkes - South ABS suburbs to form Parkes & Capital Hill
-
-    Args:
-        df: (pd.Dataframe) ABS sourced dataframe
-        group_list: (list(str)) Specifies df columns to be used for grouping
-    
-    Returns:
-        df: (pd.Dataframe) Updated dataframe
-    """  
-    comb_df = df[(df['Suburb'] == 'Parkes - North') | (df['Suburb'] == 'Parkes - South')]
-    comb_df = comb_df.groupby(group_list).sum().reset_index()
-    parks_ch = comb_df[comb_df['Suburb'] == 'Parkes - NorthParkes - South'].copy()
-    parks_ch['Suburb'] = 'Parkes & Capital Hill'
-    df = df[(df['Suburb'] != 'Parkes - North') & (df['Suburb'] != 'Parkes - South')]
-    df = pd.concat([df, parks_ch], ignore_index=True)
-    return df
-
-
-def group_crimes(df, group_list):
-    """
-    Groups crime statistics by crime similarity
-
-    Args:
-        df: (pd.Dataframe) Crime dataframe with original crime names
-        group_list: (list(str)) Specifies df columns to be used for grouping
-    
-    Returns:
-        df: (pd.Dataframe) Grouped crime dataframe
-    """
-
-    burglary = df[(df['Crime'] == 'Burglary - Dwellings') | (df['Crime'] == 'Burglary - Other') | 
-                        (df['Crime'] == 'Burglary - Shops')]
-    burglary = burglary.groupby(group_list).sum().reset_index()
-    burglary['Crime'] = 'Burglary'
-    df = pd.concat([df, burglary], ignore_index=True)
-
-    robbery = df[(df['Crime'] == 'Robbery - Armed') | (df['Crime'] == 'Robbery - Other')]
-    robbery = robbery.groupby(group_list).sum().reset_index()
-    robbery['Crime'] = 'Robbery'
-    df = pd.concat([df, robbery], ignore_index=True)
-
-    theft = df[(df['Crime'] == 'Theft - Motor Vehicles') | (df['Crime'] == 'Theft - Other')]
-    theft = theft.groupby(group_list).sum().reset_index()
-    theft['Crime'] = 'Theft'
-    df = pd.concat([df, theft], ignore_index=True)
-
-    other = df[(df['Crime'] == 'Other - Against A Person') | (df['Crime'] == 'Other')]
-    other = other.groupby(group_list).sum().reset_index()
-    other['Crime'] = 'Other Crime'
-    df = pd.concat([df, other], ignore_index=True)
-
-    tins = df[(df['Crime'] == 'TINs - Speeding') | (df['Crime'] == 'TINs - Mobile Use') | 
-                    (df['Crime'] == 'TINs - Seatbelts') | (df['Crime'] == 'TINs - Other')]
-    tins = tins.groupby(group_list).sum().reset_index()
-    tins['Crime'] = 'TINs'
-    df = pd.concat([df, tins], ignore_index=True)
-
-    # remove crimes which form a group
-    df = df[df['Crime'].isin(['Burglary', 'Robbery', 'Theft', 'Other', 
-                              'TINs', 'Homicide', 'Family Violence', 'Assault', 
-                              'Sexual Assault', 'Property Damage', 'CINs'])]
-    return df
-
-
-def add_regions(df, region_df):
-    """
-    Creates 'Region' column corresponding to 'Suburb' column
-
-    Args:
-        df: (pd.Dataframe) Dataframe containing 'Suburb' column
-        region_df: (pd.Dataframe) Dataframe listing suburbs (SA2) and their regions (SA3)
-    
-    Returns:
-        merged_df: (pd.Dataframe) df with added 'Region' column
-    """
-    merged_df = pd.merge(df, region_df, how='left', on='Suburb')  
-    return merged_df
-
-
-def save_region_suburb(df, group_cols, title, is_crime = False):
-    """
-    Reorders and saves original dataframe, alongside the same dataframe grouped by 'Region'
-    Crime data not saved to final processed path to allow for further manipulation
-    Args:
-        df: (pd.Dataframe) Dataframe containing 'Suburb' and 'Region' columns
-        group_list: (list(str)) Specifies df columns to be used for grouping
-        title: (str) Save file name prefix
-        is_crime: (binary) Determines file save path
-    """
-    if is_crime:
-        save_paths = [processed_path, processed_path]
-    else:
-        save_paths = [final_path_region, final_path_suburb]
-
-    region_df = df.groupby(group_cols).sum().reset_index().drop(columns=['Suburb'])
-    name = title + '_region.csv' 
-    region_df.to_csv(save_paths[0] / name, index=False)
-
-    col_order = region_df.columns.tolist()
-    col_order.insert(1, 'Suburb')
-    df = df[col_order]
-    name = title + '_suburb.csv' 
-    df.to_csv(save_paths[1] / name, index=False)
-
-
-### PROCESS SUBURB DATA ###
-processed_path = Path('data/processed')
-final_path_region = Path('data/processed/final/region')
-final_path_suburb = Path('data/processed/final/suburb')
-final_path_suburb.mkdir(parents=True, exist_ok=True)
-final_path_region.mkdir(parents=True, exist_ok=True)
 
 raw_path = Path('data/raw')
 suburb_path = Path('data/raw/suburb')
+processed_path = Path('data/processed')
 
+### PROCESS SUBURB DATA ###
 # combine seperate suburb files
 raw_f_names = [f.name for f in suburb_path.iterdir() if f.is_file()]
 sa2_f_names = [f_name for f_name in raw_f_names if 'Region summary_' in f_name]
 
-suburb_df = create_suburb_df(sa2_f_names[0])
+suburb_df = create_suburb_df(sa2_f_names[0], suburb_path)
 for s in sa2_f_names[1:]:
-    suburb_df = pd.concat([suburb_df, create_suburb_df(s)], ignore_index=True)
+    suburb_df = pd.concat([suburb_df, create_suburb_df(s, suburb_path)], ignore_index=True)
 
 # combine Parkes and Capitol Hill areas
 # warning: incomplete socioeconomic data for Parkes 
@@ -176,7 +38,7 @@ suburb_df = suburb_df.dropna()
 desc_counts = suburb_df['Total Description'].value_counts()
 keep_stats = desc_counts[desc_counts == desc_counts.max()].index
 suburb_df = suburb_df[suburb_df['Total Description'].isin(keep_stats)]
-suburb_df = suburb_df[suburb_df['Total Description'].str.contains('(no.)')]
+suburb_df = suburb_df[suburb_df['Total Description'].str.contains('(no.)', regex=False)]
 
 
 ### PROCESS POPULATION DATA ###
@@ -270,19 +132,21 @@ crime_long[['Year', 'Quarter']] = crime_long['Year_Quarter'].str.split(' ', expa
 crime_long = crime_long.drop(columns=['Year_Quarter'])
 crime_long['Year'] = crime_long['Year'].astype(int)
 pop_long = pop_df.melt( id_vars='Suburb', var_name='Year', value_name='Population')
-pop_long = pop_long[pop_long['Year'].isin(crime_long['Year'])]
-suburb_long = suburb_df.melt( id_vars=['Suburb', 'Total Description'], var_name='Year', value_name='Value')
+suburb_long = suburb_df.melt( id_vars=['Suburb', 'Total Description'], var_name='Year', value_name='Number')
+suburb_long['Year'] = suburb_long['Year'].astype(int)
 
 # add region data where missing
 region_suburbs = crime_long[['Region', 'Suburb']].drop_duplicates(['Region', 'Suburb'])
 pop_long = add_regions(pop_long, region_suburbs)
 suburb_long = add_regions(suburb_long, region_suburbs)
 
+crime_long_grouped = group_crimes(crime_long.copy(), ['Region', 'Suburb', 'Year', 'Quarter'])
+crime_suburb = pd.merge(crime_long_grouped, pop_long, on=['Region', 'Suburb', 'Year'], how='left').sort_values(by=['Region', 'Suburb', 'Crime', 'Year', 'Quarter'])
+stats_suburb = pd.merge(suburb_long, pop_long, on=['Region', 'Suburb', 'Year'], how='inner').sort_values(by=['Region', 'Suburb', 'Total Description',])
+
 
 ### EXPORT DATA ###
 
-crime_long_grouped = group_crimes(crime_long.copy(), ['Region', 'Suburb', 'Year', 'Quarter'])
-save_region_suburb(crime_long, ['Region', 'Crime', 'Year', 'Quarter'], 'crime', True)
-save_region_suburb(crime_long_grouped, ['Region', 'Crime', 'Year', 'Quarter'], 'crime_grouped', True)
-save_region_suburb(pop_long, ['Region', 'Year'], 'population')
-save_region_suburb(suburb_long, ['Region', 'Year', 'Total Description'], 'suburb_stats')
+save_region_suburb(crime_suburb, ['Crime', 'Year', 'Quarter'], 'crime', processed_path)
+save_region_suburb(stats_suburb, ['Total Description', 'Year'], 'stats', processed_path)
+
