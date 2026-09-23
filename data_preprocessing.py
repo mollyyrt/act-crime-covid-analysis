@@ -168,6 +168,17 @@ for s in sa2_f_names[1:]:
 suburb_df = combine_parkes_ch_suburbs(suburb_df, ['Measure Code', 'Parent Description', 'Description'])
 
 
+# filter suburb statistics based on data availability
+suburb_df['Total Description'] = suburb_df['Parent Description'] + ' : ' + suburb_df['Description']
+suburb_df = suburb_df.drop(columns=['Measure Code', 'Parent Description', 'Description', '2015', 
+                                    '2017', '2018', '2019', '2020','2022', '2023', '2024','2025'])
+suburb_df = suburb_df.dropna()
+desc_counts = suburb_df['Total Description'].value_counts()
+keep_stats = desc_counts[desc_counts == desc_counts.max()].index
+suburb_df = suburb_df[suburb_df['Total Description'].isin(keep_stats)]
+suburb_df = suburb_df[suburb_df['Total Description'].str.contains('(no.)')]
+
+
 ### PROCESS POPULATION DATA ###
 
 pop = pd.read_excel(raw_path / 'population_estimates_aus.xlsx', sheet_name=None)
@@ -240,20 +251,8 @@ crime_df = crime_df[(crime_df['Suburb'] != 'Parkes') & (crime_df['Suburb'] != 'C
 # remove Hume 
 crime_df = crime_df[crime_df['Region'] != 'Other']
 
+
 ### PROCESS ALL ###
-
-# find suburbs with population counts available
-all_suburbs = suburb_df['Suburb'].unique()
-pop_suburbs = pop_df['Suburb'].unique()
-
-# filter suburb statistics based on data availability
-suburb_df['Total Description'] = suburb_df['Parent Description'] + ' : ' + suburb_df['Description']
-suburb_df = suburb_df.drop(columns=['Measure Code', 'Parent Description', 'Description', '2015', 
-                                    '2017', '2018', '2019', '2020','2022', '2023', '2024','2025'])
-suburb_df = suburb_df.dropna()
-desc_counts = suburb_df['Total Description'].value_counts()
-keep_stats = desc_counts[desc_counts == desc_counts.max()].index
-suburb_df = suburb_df[suburb_df['Total Description'].isin(keep_stats)]
 
 # keep only data for suburbs found in intersection of suburb and crime dataframes
 remove_s_suburb = list(set(suburb_df['Suburb'].unique()) - set(pop_df['Suburb'].unique()))
