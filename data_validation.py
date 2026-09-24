@@ -34,3 +34,13 @@ for f in file_names:
     file_validation(df)
 
 
+crime_df = pd.read_csv(source_path / 'crime_suburb.csv')
+stats_df = pd.read_csv(source_path / 'stats_suburb.csv')
+
+print(f"Number of regions: {crime_df['Region'].nunique()}")
+print(f"Number of suburbs: {crime_df['Suburb'].nunique()}")
+print(f"Date range: {crime_df['Year'].min()} to {crime_df['Year'].max()}")
+
+print('Available socioeconomic statistics:')
+print(stats_df['Total Description'].unique())
+
