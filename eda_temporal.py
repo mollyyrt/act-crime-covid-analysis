@@ -5,56 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import seaborn as sns
-from covid_dates import add_covid_col
-
-def datetime(df):
-    """
-    Get datetime column from 'Year' and 'Quarter' columns
-
-    Args:
-        df: (pd.Dataframe) dataframe containing 'Year' and 'Quarter' columns
-
-    Returns:
-        df: (pd.Dataframe) Updated dataframe including pd.datetime ('Date') column
-    """
-    y_q = df['Year'].astype(str) + '-' + df['Quarter']
-    df['Date'] = pd.PeriodIndex(y_q, freq='Q').to_timestamp()
-    return df
-
-
-def add_total_crime(df):
-    """
-    Formats crime dataframe columns and includes statistics for all crime types
-
-    Args:
-        df: (pd.Dataframe) Processed crime dataframe
-        
-    Returns:
-        df_total: (pd.Dataframe) Updated dataframe with formatted 'Date' and 'Covid' columns
-                                    with 'All Crime' included in crime types
-    """
-    if 'Covid' in df.columns:
-        df = df.drop(columns='Covid')
-    group_cols = df.columns.tolist()
-    group_cols.remove('Crime')
-    group_cols.remove('Number')
-    group_cols.remove('Rate')
-    df_all = df.groupby(group_cols, as_index=False).sum().drop(columns=['Crime', 'Rate'])
-    # specify time in relation to covid
-    df = add_covid_col(df)
-    df_all = add_covid_col(df_all)
-    # recalculate rates if necessary
-    if 'Region' not in group_cols:
-        df['Rate'] = df['Number']/(df['Population']/1000)
-    df_all['Rate'] = df_all['Number']/(df_all['Population']/1000)
-    # add datetime format column
-    df = datetime(df)
-    df_all = datetime(df_all)
-    #combine data
-    df_all.insert(0, 'Crime', ['All Crime'] * len(df_all))
-    df_total = pd.concat([df_all, df])
-    return df_total
-
 
 def seasonal_amplitude(crime_df, group_cols):
     """
