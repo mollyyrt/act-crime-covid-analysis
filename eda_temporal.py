@@ -21,12 +21,15 @@ source_path = Path('data/processed')
 
 crime_act = pd.read_csv(source_path / 'crime_act.csv')
 crime_act['Date'] = pd.to_datetime(crime_act['Date'], format='%Y-%m-%d')
+crime_act['Covid'] = pd.Categorical(crime_act['Covid'], categories=['Pre', 'During', 'Post'], ordered=True)
 
 crime_region = pd.read_csv(source_path / 'crime_region.csv')
 crime_region['Date'] = pd.to_datetime(crime_region['Date'], format='%Y-%m-%d')
+crime_region['Covid'] = pd.Categorical(crime_region['Covid'], categories=['Pre', 'During', 'Post'], ordered=True)
 
 crime_suburb = pd.read_csv(source_path / 'crime_suburb.csv')
 crime_suburb['Date'] = pd.to_datetime(crime_suburb['Date'], format='%Y-%m-%d')
+crime_suburb['Covid'] = pd.Categorical(crime_suburb['Covid'], categories=['Pre', 'During', 'Post'], ordered=True)
 
 sns.set_palette('Set2', 6)
 
@@ -58,14 +61,14 @@ for i, ax in enumerate(fig.get_axes()):
     changes = [round(crime_act_pct.iloc[(3*i)+1, 3], 1), round(crime_act_pct.iloc[(3*i)+2, 3], 1)]
     str_changes = [f'{x}%' if x < 0 else f'+{x}%' for x in changes]
 
-    ax.text(0.5, 0.02, str_changes[0], transform=ax.transAxes, ha='center', size=9, weight='bold', c='white')
-    ax.text(0.8, 0.02, str_changes[1], transform=ax.transAxes, ha='center', size=9, weight='bold', c='white')
+    ax.text(0.5, 0.025, str_changes[0], transform=ax.transAxes, ha='center', size=9, weight='bold', c='white')
+    ax.text(0.8, 0.025, str_changes[1], transform=ax.transAxes, ha='center', size=9, weight='bold', c='white')
 plt.suptitle('Mean ACT Crime Rates and Percentage Changes for Each Covid Period', fontsize=14)
 plt.tight_layout(rect=[0, 0.07, 1, 1])
 plt.show()
 plt.close('all')
 
-
+sys.exit()
 ## explore seasonality trends
 act_seasonal, act_seasonal_amp = seasonal_amplitude(crime_act, ['Crime', 'Quarter', 'Covid'])
 print(act_seasonal.head())

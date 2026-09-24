@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import seaborn as sns
+import sys
 
 def seasonal_amplitude(crime_df, group_cols):
     """
@@ -68,13 +69,16 @@ def covid_pct_change(df, cols):
     group_cols = cols.copy()
     group_cols.remove('Rate')
     mean_rate = df[cols]
-    mean_rate = mean_rate.groupby(group_cols, as_index=False, observed=True).mean()
+    # mean crime rate per group
+    mean_rate = mean_rate.groupby(group_cols, as_index=False, observed=True).mean().sort_values(by=['Crime', 'Covid'])
 
+    # percentage change in mean grouped crime rate between covid periods
     mean_rate_change = mean_rate.copy()
     group_cols.remove('Covid')
     mean_rate_change['Percentage Change'] = mean_rate_change.groupby(group_cols, as_index=False)['Rate'].pct_change() * 100
     mean_rate_change = mean_rate_change.drop(columns='Rate')
 
+    # format dfs
     pct_change_long = pd.merge(mean_rate, mean_rate_change, on=mean_rate.columns[:-1].tolist(), how='inner')
     mean_rate = mean_rate.pivot(index=group_cols, columns='Covid', values='Rate')
     mean_rate_change = mean_rate_change.pivot(index=group_cols, columns='Covid', values='Percentage Change').drop(columns='Pre').fillna(0) # remove division by 0 error
@@ -175,7 +179,7 @@ def crime_subplots(df, plot_func, x, y, h, x_label=True, y_label=True, **kwargs)
         **kwargs: optional additional keyword arguments passed to plot_func
     """
     pal = sns.color_palette('Set2', 6)
-    
+
     fig, axs = plt.subplots(3,4, figsize=(12,7))
     for i, ax in enumerate(axs.flat):
         crime_title = df['Crime'].unique()[i]
