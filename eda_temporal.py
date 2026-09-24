@@ -1,6 +1,5 @@
 import pandas as pd
 from pathlib import Path
-import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -68,7 +67,6 @@ plt.tight_layout(rect=[0, 0.07, 1, 1])
 plt.show()
 plt.close('all')
 
-sys.exit()
 ## explore seasonality trends
 act_seasonal, act_seasonal_amp = seasonal_amplitude(crime_act, ['Crime', 'Quarter', 'Covid'])
 print(act_seasonal.head())
