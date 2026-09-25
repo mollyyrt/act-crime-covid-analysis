@@ -1,4 +1,4 @@
-Region,Suburb,Year,Quarter,Crime,Number,Population,Rate,Date,Covid
+Region,Suburb,Year,Quarter,Crime,Number,Population,Rate,Date,COVID
 Belconnen,Aranda,2014,Q1,All Crime,137,2477,55.30884134033105,2014-01-01,Pre
 Belconnen,Aranda,2014,Q2,All Crime,152,2477,61.364553895841745,2014-04-01,Pre
 Belconnen,Aranda,2014,Q3,All Crime,167,2477,67.42026645135245,2014-07-01,Pre

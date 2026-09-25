@@ -153,7 +153,7 @@ def datetime(df):
 
 def add_covid_col(df):
     """
-    Adds 'Covid' column to crime data, specifying time period in relation to covid 
+    Adds 'COVID' column to crime data, specifying time period in relation to COVID 
     
     Args:
         df: (pd.Dataframe) Crime data containing 'Year' and 'Quarter' columns
@@ -161,21 +161,21 @@ def add_covid_col(df):
             df: (pd.Dataframe) Updated dataframe
     """
     if 'Quarter' in df.columns:
-        df['Covid'] = np.where(((df['Year'] == 2021) & (df['Quarter'] != 'Q4')) | 
+        df['COVID'] = np.where(((df['Year'] == 2021) & (df['Quarter'] != 'Q4')) | 
                             ((df['Year'] == 2020) & (df['Quarter'] != 'Q1')), 'During', 
                             np.where(((df['Year'] == 2020) & (df['Quarter'] == 'Q1')) | 
                                         (df['Year'] < 2020), 'Pre', 'Post'))
     else:
-        df['Covid'] = np.where((df['Year'] == 2021) | (df['Year'] == 2020), 'During', 
+        df['COVID'] = np.where((df['Year'] == 2021) | (df['Year'] == 2020), 'During', 
                                np.where(df['Year'] < 2020, 'Pre', 'Post'))
         
-    df['Covid'] = pd.Categorical(df['Covid'], categories=['Pre', 'During', 'Post'], ordered=True)
+    df['COVID'] = pd.Categorical(df['COVID'], categories=['Pre', 'During', 'Post'], ordered=True)
     return df
 
 def save_region_suburb(suburb_df, group_cols, title, target_dir):
     """
     Creates region and ACT level data from suburb level dataframe
-    Includes measurement rates per 1,000 population, covid period flags and datetime information
+    Includes measurement rates per 1,000 population, COVID period flags and datetime information
     Saves dataframe to target directory
     Args:
         df: (pd.Dataframe) Dataframe containing 'Suburb', 'Region', 'Number', 'Population' and group_cols columns

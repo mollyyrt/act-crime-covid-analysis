@@ -6,19 +6,19 @@ import sys
 
 def seasonal_amplitude(crime_df, group_cols):
     """
-    Calculates percentage deviation between mean quarterly rates and period rates for each covid period
+    Calculates percentage deviation between mean quarterly rates and period rates for each COVID period
     Args:
         crime_df: (pd.Dataframe) Crime dataframe (containing at minimum 'Rate' column and columns in group_cols)
-        group_cols: (list(str)) Column names used for grouping when calculating mean quarterly rates (must contain 'Quarter' and 'Covid')
+        group_cols: (list(str)) Column names used for grouping when calculating mean quarterly rates (must contain 'Quarter' and 'COVID')
     Returns:
             seasonal: (pd.Dataframe) Mean quarterly crime rate for each column value in group_cols
             deviation_range: (pd.Dataframe) Seasonal amplitude (percentage deviation range) 
     """
     filter_cols = group_cols + ['Rate']
-    # calculate quarterly mean rates within a covid period
+    # calculate quarterly mean rates within a COVID period
     seasonal = crime_df[filter_cols].groupby(group_cols, as_index=False, observed=True).mean()
     seasonal.columns = group_cols + ['Mean Quarter Rate']
-    # calculate covid period mean rates
+    # calculate COVID period mean rates
     period_group = [x for x in group_cols if x not in ['Quarter']]
     period_filter = [x for x in filter_cols if x not in ['Quarter']]
     period_mean = crime_df[period_filter].groupby(period_group, as_index=False, observed=True).mean()
@@ -57,33 +57,33 @@ def relative_difference(act_df, area_df):
 
 def covid_pct_change(df, cols):
     """
-    Calculates and displays percentage change in crime rates by covid period (not including 'All Crime')
+    Calculates and displays percentage change in crime rates by COVID period (not including 'All Crime')
 
     Args:
         df: (pd.Dataframe) Crime dataframe
-        cols: (list(str)) df columns containing (at minimum) 'Crime' and 'Covid', used for grouping, and 'Rate' used for filtering
+        cols: (list(str)) df columns containing (at minimum) 'Crime' and 'COVID', used for grouping, and 'Rate' used for filtering
     Returns:
-            pct_change_long: (pd.Dataframe) Long-form dataframe listing 'Rate' and 'Percentage Change' for covid periods under specified columns
-            mean_rate: (pd.Dataframe) Long-form dataframe displaying each covid period crime rate under specified columns
+            pct_change_long: (pd.Dataframe) Long-form dataframe listing 'Rate' and 'Percentage Change' for COVID periods under specified columns
+            mean_rate: (pd.Dataframe) Long-form dataframe displaying each COVID period crime rate under specified columns
     """
     group_cols = cols.copy()
     group_cols.remove('Rate')
     mean_rate = df[cols]
     # mean crime rate per group
-    mean_rate = mean_rate.groupby(group_cols, as_index=False, observed=True).mean().sort_values(by=['Crime', 'Covid'])
+    mean_rate = mean_rate.groupby(group_cols, as_index=False, observed=True).mean().sort_values(by=['Crime', 'COVID'])
 
-    # percentage change in mean grouped crime rate between covid periods
+    # percentage change in mean grouped crime rate between COVID periods
     mean_rate_change = mean_rate.copy()
-    group_cols.remove('Covid')
+    group_cols.remove('COVID')
     mean_rate_change['Percentage Change'] = mean_rate_change.groupby(group_cols, as_index=False)['Rate'].pct_change() * 100
     mean_rate_change = mean_rate_change.drop(columns='Rate')
 
     # format dfs
     pct_change_long = pd.merge(mean_rate, mean_rate_change, on=mean_rate.columns[:-1].tolist(), how='inner')
-    mean_rate = mean_rate.pivot(index=group_cols, columns='Covid', values='Rate')
-    mean_rate_change = mean_rate_change.pivot(index=group_cols, columns='Covid', values='Percentage Change').drop(columns='Pre').fillna(0) # remove division by 0 error
-    mean_rate.columns = ['Pre-Covid Mean Crime Rate', 'Covid Mean Crime Rate', 'Post-Covid Mean Crime Rate']
-    mean_rate_change.columns = ['Change During Covid (%)', 'Change Post-Covid (%)']
+    mean_rate = mean_rate.pivot(index=group_cols, columns='COVID', values='Rate')
+    mean_rate_change = mean_rate_change.pivot(index=group_cols, columns='COVID', values='Percentage Change').drop(columns='Pre').fillna(0) # remove division by 0 error
+    mean_rate.columns = ['Pre-COVID Mean Crime Rate', 'COVID Mean Crime Rate', 'Post-COVID Mean Crime Rate']
+    mean_rate_change.columns = ['Change During COVID (%)', 'Change Post-COVID (%)']
     
     pct_change = pd.merge(mean_rate, mean_rate_change, left_index=True, right_index=True, how='inner')
     print(pct_change)
@@ -117,17 +117,17 @@ def column_iqr(df, group_cols, val_col):
 
 def crime_rate_bump(mean_rate_df, label_col, crime_name):
     """
-    Displays a bump chart of crime rate rankings for each covid-period
+    Displays a bump chart of crime rate rankings for each COVID-period
 
     Args:
-        mean_rate_df: (pd.Dataframe) Long-form dataframe displaying each covid period crime rate
+        mean_rate_df: (pd.Dataframe) Long-form dataframe displaying each COVID period crime rate
         group_cols: (list(str)) df column names used for grouping in the aggregation
         val_col: (str) df column name for which outliers should be determined
     """       
     mean_rate_all = mean_rate_df[mean_rate_df['Crime'] == crime_name].copy()
-    mean_rate_all['Pre Rank'] = mean_rate_all['Pre-Covid Mean Crime Rate'].rank()
-    mean_rate_all['During Rank'] = mean_rate_all['Covid Mean Crime Rate'].rank()
-    mean_rate_all['Post Rank'] = mean_rate_all['Post-Covid Mean Crime Rate'].rank()
+    mean_rate_all['Pre Rank'] = mean_rate_all['Pre-COVID Mean Crime Rate'].rank()
+    mean_rate_all['During Rank'] = mean_rate_all['COVID Mean Crime Rate'].rank()
+    mean_rate_all['Post Rank'] = mean_rate_all['Post-COVID Mean Crime Rate'].rank()
     
     regions = mean_rate_all['Region'].unique()
     region_pal = sns.color_palette('Set2', n_colors=len(regions))
@@ -156,7 +156,7 @@ def crime_rate_bump(mean_rate_df, label_col, crime_name):
 
     axs.set_xticks(range(len(rank_cols)))
     axs.set_xticklabels(['Pre', 'During', 'Post'])
-    axs.set_xlabel('Covid')
+    axs.set_xlabel('COVID')
     axs.set_xlim(-0.8, len(rank_cols)-0.5)
     axs.set_ylim(-0.4, len(mean_rate_all)+1)
 
@@ -198,13 +198,13 @@ def crime_subplots(df, plot_func, x, y, h, x_label=True, y_label=True, **kwargs)
             ax.set_xlabel('')
         if not y_label:
             ax.set_ylabel('')
-    if h == 'Covid':
+    if h == 'COVID':
         labels = ['Pre', 'During', 'Post']
         handles = [Line2D([0], [0], color=pal[i], linestyle='-', linewidth=2)
                    for i in range(len(labels))]
 
         fig.legend(handles=handles, labels=labels, loc='lower center', 
-                           ncol=len(labels), bbox_to_anchor=(0.5, 0.005), title='Covid Period')
+                           ncol=len(labels), bbox_to_anchor=(0.5, 0.005), title='COVID Period')
         
 def region_subplots(df, crime_name, plot_func, x, y, h, x_label=True, y_label=True, **kwargs):
     """
@@ -238,13 +238,13 @@ def region_subplots(df, crime_name, plot_func, x, y, h, x_label=True, y_label=Tr
             ax.set_xlabel('')
         if not y_label:
             ax.set_ylabel('')
-    if h == 'Covid':
+    if h == 'COVID':
         labels = ['Pre', 'During', 'Post']
         handles = [Line2D([0], [0], color=pal[i], linestyle='-', linewidth=2)
                    for i in range(len(labels))]
 
         fig.legend(handles=handles, labels=labels, loc='lower center', 
-                           ncol=len(labels), bbox_to_anchor=(0.5, 0.005), title='Covid Period')
+                           ncol=len(labels), bbox_to_anchor=(0.5, 0.005), title='COVID Period')
 
         
 def regional_vs_suburb_plot(suburb_df, region_df, crime, region, covid, y_val, axs):
@@ -256,14 +256,14 @@ def regional_vs_suburb_plot(suburb_df, region_df, crime, region, covid, y_val, a
         region_df: (pd.Dataframe) Region-level dataframe containing 'Crime', 'Region', 'Suburb' and y_val
         crime: (str) 'Crime' value for filtering
         region: (str) 'Region' value for filtering
-        covid: (str) 'Covid' value for filtering
+        covid: (str) 'COVID' value for filtering
         y_val: (str) Column name used for y-axis measure
         axs: axis object
     """
-    df_filtered = suburb_df[(suburb_df['Crime'] == crime) & (suburb_df['Covid'] == covid) & (suburb_df['Region'] == region)]
-    mean_region_val = region_df[(region_df['Crime'] == crime) & (region_df['Covid'] == covid) & (region_df['Region'] == region)][y_val]
+    df_filtered = suburb_df[(suburb_df['Crime'] == crime) & (suburb_df['COVID'] == covid) & (suburb_df['Region'] == region)]
+    mean_region_val = region_df[(region_df['Crime'] == crime) & (region_df['COVID'] == covid) & (region_df['Region'] == region)][y_val]
 
     sns.boxplot(data=df_filtered, x='Suburb', y=y_val, hue='Suburb', ax=axs, legend=False, zorder=2)
     axs.axhline(y=mean_region_val.item(), color='grey', linestyle='--', linewidth=1, alpha=0.7, zorder=1)
-    axs.annotate(f'{covid} Covid', xy=(1.02, 0.5), xycoords='axes fraction', rotation=270, fontsize=10,  color='grey', va='center', ha='right')
+    axs.annotate(f'{covid} COVID', xy=(1.02, 0.5), xycoords='axes fraction', rotation=270, fontsize=10,  color='grey', va='center', ha='right')
     axs.set_xlabel(None)

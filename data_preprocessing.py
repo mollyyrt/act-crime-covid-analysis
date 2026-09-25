@@ -1,7 +1,6 @@
 import pandas as pd
 from pathlib import Path
 import numpy as np
-import sys
 from src.preprocessing_funcs import (
     format_suburb_names,
     create_suburb_df,
