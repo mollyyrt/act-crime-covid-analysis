@@ -40,6 +40,8 @@ stats_df = pd.read_csv(source_path / 'stats_suburb.csv')
 print(f"Number of regions: {crime_df['Region'].nunique()}")
 print(f"Number of suburbs: {crime_df['Suburb'].nunique()}")
 print(f"Date range: {crime_df['Year'].min()} to {crime_df['Year'].max()}")
+print('Number of quarters observed in each Covid period:')
+print(crime_df[['Covid']].value_counts()/crime_df[['Suburb']].nunique().values[0])
 
 print('Available socioeconomic statistics:')
 print(stats_df['Total Description'].unique())
