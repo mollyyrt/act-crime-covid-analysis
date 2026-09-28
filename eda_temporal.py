@@ -124,11 +124,9 @@ print('\nNumber of relative difference outliers')
 covid_region_comparison_individual = covid_region_comparison[covid_region_comparison['Crime'] != 'All Crime']
 h_region_rel_diff, l_region_rel__diff = column_iqr(covid_region_comparison_individual, ['Crime', 'COVID'], 'Relative Difference')
 print('High outliers:')
-print(h_region_rel_diff.value_counts(subset=['Crime', 'COVID']).sort_index())
-print(h_region_rel_diff.value_counts(subset=['Region', 'COVID']).sort_index())
+print(h_region_rel_diff.value_counts(subset=['COVID']).sort_index())
 print('Low outliers:')
-print(l_region_rel__diff.value_counts(subset=['Crime', 'COVID']).sort_index())
-print(l_region_rel__diff.value_counts(subset=['Region', 'COVID']).sort_index())
+print(l_region_rel__diff.value_counts(subset=['COVID']).sort_index())
 
 # calculate percentage change during and after COVID
 print('\nRegional crime rate changes by COVID period:')
@@ -183,7 +181,6 @@ plt.title('Outliers identified among quarterly observations across 103 suburbs',
 plt.tight_layout()
 plt.show()
 plt.clf()
-sys.exit()
 
 
 # compare total crime rates/number vs population within suburbs
