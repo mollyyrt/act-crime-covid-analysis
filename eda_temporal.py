@@ -49,6 +49,15 @@ plt.tight_layout(rect=[0, 0.07, 1, 0.98])
 plt.show()
 plt.close('all')
 
+
+crime_subplots(crime_act, sns.boxplot, None, 'Rate', 'COVID', False, False, legend=False)
+plt.suptitle('ACT Crime Rates', fontsize=14)
+act_rates_fig = plt.gcf()
+act_rates_fig.text(0.5, 0.94, 'Number of Crimes per 1000 People', ha='center', va='top', fontsize=10, color='grey')
+plt.tight_layout(rect=[0, 0.07, 1, 0.98])
+plt.show()
+plt.close('all')
+
 # calculate percentage change during and after COVID
 print('\nACT-wide crime rate changes by COVID period:')
 crime_act_pct, act_mean_rate = covid_pct_change(crime_act, ['Crime', 'Rate', 'COVID'])
@@ -72,7 +81,7 @@ act_seasonal, act_seasonal_amp = seasonal_amplitude(crime_act, ['Crime', 'Quarte
 print(act_seasonal.head())
 print(act_seasonal_amp.head())
 
-crime_subplots(act_seasonal, sns.lineplot, 'Quarter', 'Mean Quarter Rate', 'COVID', x_label=True, y_label=False, legend=False)
+crime_subplots(crime_act, sns.lineplot, 'Quarter', 'Rate', 'COVID', x_label=True, y_label=False, legend=False)
 plt.suptitle('ACT Mean Quarterly Crime Rates by COVID Period', fontsize=12)
 plt.tight_layout(rect=[0, 0.07, 1, 1])
 plt.show()
@@ -141,7 +150,7 @@ plt.close('all')
 # regional seasonality
 region_seasonal, region_seasonal_amp = seasonal_amplitude(crime_region, ['Crime', 'Region', 'Quarter', 'COVID'])
 
-region_subplots(region_seasonal, 'All Crime', sns.lineplot, 'Quarter', 'Mean Quarter Rate', 'COVID', x_label=True, y_label=False, legend=False)
+region_subplots(crime_region, 'All Crime', sns.lineplot, 'Quarter', 'Rate', 'COVID', x_label=True, y_label=False, legend=False)
 plt.suptitle('Regional Mean Quarterly Total Crime Rate by Covid Period', fontsize=12)
 plt.tight_layout(rect=[0, 0.07, 1, 1])
 plt.show()
@@ -184,7 +193,7 @@ plt.clf()
 
 
 # compare total crime rates/number vs population within suburbs
-g = sns.jointplot(data=crime_suburb[crime_suburb['Crime'] != 'All Crime'], x='Population', y='Rate', hue='Covid')
+g = sns.jointplot(data=crime_suburb[crime_suburb['Crime'] != 'All Crime'], x='Population', y='Rate', hue='COVID')
 plt.suptitle('Suburb Crime Rates by Population and COVID Period', fontsize=12)
 g.figure.text(0.5, 0.94, 'Quarterly Crime Rates Across 103 Suburbs', ha='center', va='top', fontsize=10, color='grey')
 plt.tight_layout(rect=[0, 0.07, 1, 0.98])
@@ -250,44 +259,53 @@ plt.show()
 plt.close('all')
 
 # relative difference outliers
-suburb_comparison_covid = suburb_rel_diff.drop(columns=['Quarter', 'ACT Rate', 'Year'])
-suburb_comparison_covid = suburb_comparison_covid.groupby(['Crime', 'Region', 'Suburb', 'COVID'], as_index=False, observed=True).mean()
+suburb_comparison_covid = pd.merge(suburb_rel_diff, crime_suburb[['Region', 'Suburb', 'Year', 'Quarter', 'Crime', 'COVID', 'Low Population']], on = ['Region', 'Suburb', 'Year', 'Quarter', 'Crime', 'COVID', 'Low Population'])
+# remove low population suburbs
+suburb_comparison_covid = suburb_comparison_covid[suburb_comparison_covid['Low Population'] == 0]
+suburb_comparison_covid = suburb_comparison_covid.drop(columns=['Quarter', 'ACT Rate', 'Year', 'Low Population'])
 
+suburb_comparison_covid = suburb_comparison_covid.groupby(['Crime', 'Region', 'Suburb', 'COVID'], as_index=False, observed=True).mean()
 high_suburb_rel_diff, low_suburb_rel_diff = column_iqr(suburb_comparison_covid, ['Crime', 'COVID'], 'Relative Difference')
+
 print('\nNumber of extreme suburb relative differences in each COVID period')
 print('High outliers:')
-print(high_suburb_rel_diff.value_counts(subset=['Crime', 'Covid']).sort_index())
-print(high_suburb_rel_diff.value_counts(subset=['Covid']).sort_index())
+print(high_suburb_rel_diff.value_counts(subset=['COVID']).sort_index())
+print(high_suburb_rel_diff.value_counts(subset=['COVID', 'Crime']).sort_index())
 print('Low outliers:')
-print(low_suburb_rel_diff.value_counts(subset=['Crime', 'Covid']).sort_index())
-print(low_suburb_rel_diff.value_counts(subset=['Covid']).sort_index())
+print(low_suburb_rel_diff.value_counts(subset=['COVID']).sort_index())
 
 
 # percentage change between suburb and ACT-wide crime rates
 suburb_pct, suburb_mean_rate = covid_pct_change(crime_suburb, ['Crime', 'Region', 'Suburb', 'COVID', 'Rate'])
 
 suburb_pct_change_only = suburb_pct[suburb_pct['COVID'] != 'Pre']
-h_suburb_pct_change, l_suburb_pct_change= column_iqr(suburb_pct[suburb_pct['COVID'] != 'Pre'], ['Crime', 'COVID'], 'Percentage Change')
-print('\nNumber of extreme percentage change values between covid periods')
-print('High outliers:')
-print(h_suburb_pct_change.value_counts(subset=['Crime', 'COVID']).sort_index())
-print(h_suburb_pct_change.value_counts(subset=['COVID']).sort_index())
-print('Low outliers:')
-print(l_suburb_pct_change.value_counts(subset=['Crime', 'COVID']).sort_index())
-print(l_suburb_pct_change.value_counts(subset=['COVID']).sort_index())
 
-crime_rate_bump(suburb_mean_rate, 'Suburb', 'All Crime')
-plt.title('Suburb Rankings for Total Crime Rate by COVID Period')
-plt.tight_layout(pad=3)
-plt.show()
-plt.close('all')
-
+# plot percentage change distribution
 crime_subplots(suburb_pct_change_only, sns.kdeplot, 'Percentage Change', None, 'COVID', x_label=True, y_label=True, legend=False)
 plt.suptitle('Mean Percentage Change in Suburb Crime Rates by COVID Period')
 plt.tight_layout(rect=[0, 0.07, 1, 1])
 plt.show()
 plt.close('all')
 
+# visualise ranking
+crime_rate_bump(suburb_mean_rate, 'Suburb', 'All Crime')
+plt.title('Suburb Rankings for Total Crime Rate by COVID Period')
+plt.tight_layout(pad=3)
+plt.show()
+plt.close('all')
+
+# percentage change outliers
+suburb_pct_change_only = pd.merge(suburb_pct_change_only, crime_suburb[['Region', 'Suburb', 'Low Population']], on = ['Region', 'Suburb'], how='left')
+suburb_pct_change_only = suburb_pct_change_only[suburb_pct_change_only['Low Population'] == 0]
+
+h_suburb_pct_change, l_suburb_pct_change= column_iqr(suburb_pct[suburb_pct['COVID'] != 'Pre'], ['Crime', 'COVID'], 'Percentage Change')
+print('\nNumber of extreme percentage change values between covid periods')
+print('High outliers:')
+print(h_suburb_pct_change.value_counts(subset=['COVID']).sort_index())
+print(h_suburb_pct_change.value_counts(subset=['Crime', 'COVID']).sort_index())
+print('Low outliers:')
+print(l_suburb_pct_change.value_counts(subset=['COVID']).sort_index())
+print(l_suburb_pct_change.value_counts(subset=['Crime', 'COVID']).sort_index())
 
 # suburb-level seasonality
 suburb_seasonal, suburb_seasonal_amp = seasonal_amplitude(crime_suburb, ['Crime', 'Region', 'Suburb', 'Quarter', 'COVID'])
